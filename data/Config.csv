@@ -1,0 +1,33 @@
+key,value,notes,source
+hand_size,5,Cards drawn at the start of each turn (a style can override this),Claude
+energy_per_turn,3,Energy refilled at the start of each turn (a style can override this),Claude
+first_turn_energy_penalty,1,Energy the player who goes first loses on their very first turn,Claude
+first_turn_draw_penalty,0,Cards the player who goes first draws less on their very first turn,Claude
+discard_hand_end_of_turn,TRUE,TRUE = unplayed cards are discarded at end of turn,Claude
+block_resets_each_turn,TRUE,TRUE = your block disappears at the start of your next turn,Claude
+combo_damage_per_link,0.5,Bonus damage an attack gets for each link already in the chain (rounded down),Claude
+combo_damage_cap,3,Maximum bonus damage from combo length,Claude
+max_cards_per_turn,10,Safety cap on cards played in one turn (stops endless zero-cost draw loops). 0 = no cap,Claude
+turn_limit,30,"Safety cap: exchanges (per round, in round mode) before the fight ends on HP percentage",Claude
+deck_min,12,Smallest legal deck,Claude
+deck_max,20,Largest legal deck,Claude
+max_copies,3,Default copy limit per card (a card's max_copies column overrides this),Claude
+xp_on_loss,5,Consolation XP for losing a match,Claude
+replay_xp_multiplier,0.5,XP multiplier for re-beating an opponent you already beat,Claude
+starting_xp,0,XP a new character starts with,Claude
+ai_threat_estimate,10,How much incoming damage the AI assumes when valuing block,Claude
+default_win_art,,End-of-fight image when you win and the opponent has no win_art (filename in art/ or https link). Blank = generated art,Claude
+default_loss_art,,End-of-fight image when you lose and the opponent has no loss_art. Blank = generated art,Claude
+exchanges_per_round,3,Exchanges (one turn each) in a round. 0 = no rounds: fight until K.O. or turn_limit,Claude
+rounds,3,Rounds in a fight unless the opponent's rounds column says otherwise. After the last round the judges decide,Claude
+corner_heal_percent,10,Percent of max HP each fighter recovers in the corner between rounds,Claude
+corner_clears_statuses,2,"Stacks of each status (Cut, Swagger...) removed in the corner between rounds. TRUE = clear all, FALSE = keep all",Claude
+corner_reshuffle,TRUE,TRUE = hand and discard are shuffled back into the deck between rounds,Claude
+alternate_round_start,TRUE,TRUE = the other fighter leads off each new round,Claude
+knockdowns_for_tko,3,Knockdown number that ends the fight (T.K.O.). 0 or 1 = hitting 0 HP is an immediate K.O.,Claude
+knockdown_recover_percent,15,Percent of max HP a fighter gets up with after a knockdown,Claude
+knockdown_clears_statuses,TRUE,TRUE = a knocked-down fighter's statuses are cleared,Claude
+pvp_turn_seconds,90,Versus: seconds per turn before it ends automatically. 0 = no clock,Claude
+pvp_disconnect_seconds,60,Versus: how long to wait for a dropped player before the other wins by forfeit,Claude
+pvp_xp_win,10,"Versus: XP for a win, added to the character you fought with",Claude
+pvp_xp_loss,5,Versus: XP for a loss,Claude

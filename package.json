@@ -1,0 +1,12 @@
+{
+  "name": "foxy-fight",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Turn-based 1v1 card fighter with chain combos, driven by a Google Sheet.",
+  "scripts": {
+    "test": "node tests/run-tests.js",
+    "sim": "node sim/simulate.js",
+    "bake": "node tools/bake.js",
+    "build": "node tools/build.js && python3 tools/make_template.py"
+  }
+}

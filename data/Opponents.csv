@@ -1,0 +1,7 @@
+id,order,name,title,style,deck,hp_bonus,aggression,caution,xp_reward,color,art,intro,win_art,loss_art,rounds,source
+opp_mochi,1,Lola Lux,Ring Card Rebel,petal_storm,,-26,1,1,30,#e79ab0,,"Honey, I've walked this ring a thousand times. Tonight I'm staying.",,,,Claude
+opp_juniper,2,"Dolores ""Dee"" Maddox",The Late Shift,stone_lotus,,-8,0.9,1.2,40,#7d6a92,,Twenty years of three a.m. fights. You're not the worst thing I'll see tonight.,,,,Claude
+opp_kiko,3,"Vicki ""High Score"" Starr",Arcade Champion,petal_storm,"ps_step x2, ps_jab_plus x2, ps_jab x1, ps_kick x2, ps_slash_plus x1, ps_slash x1, ps_flurry x1, ps_guard x2",-6,1.2,0.9,50,#e0577a,,"Insert coin, sweetheart. I'll make it quick.",,,,Claude
+opp_marlowe,4,Ingrid Kessler,The Cold Front,stone_lotus,"sl_stance x2, sl_palm_plus x2, sl_palm x2, sl_slam x2, sl_wall_plus x1, sl_wall x1, sl_throw_plus x1, sl_breath x1",-4,1,1.1,60,#7aa5b8,,Hold still. This only takes one.,,,,Claude
+opp_sora,5,Scarlett Delacroix,The Velvet Rope,sakura_tempest,"ps_step x2, ps_jab_plus x1, ps_jab x2, ps_kick_plus x1, ps_kick x1, ps_slash_plus x1, ps_slash x1, ps_flurry x1, ps_guard x2",-30,1.1,0.9,80,#a8243c,,"Everyone gets one dance with me, darling. Make it count.",,,,Claude
+opp_jade,6,Madame Ruby,The House,jade_colossus,"sl_stance x2, sl_palm_plus x2, sl_palm x2, sl_slam_plus x1, sl_slam x1, sl_wall_plus x1, sl_wall x1, sl_throw_plus x1, sl_monolith x1",4,1,1.1,120,#b8862f,,"The house always wins, dear. I simply prefer to collect in person.",,,5,Claude

@@ -1,0 +1,8 @@
+id,name,behavior,decay,ai_value,color,description,source
+bleed,Cut,dot,turn,1.5,#d0566f,Lose HP equal to stacks at the start of your turn (ignores block). Loses 1 stack each turn.,Claude
+exposed,Wide Open,damage_taken_up,turn,2,#e3a256,Each hit against you deals +1 damage per stack. Loses 1 stack each turn.,Claude
+focus,Swagger,damage_dealt_up,consume,1.5,#d8b45c,Your next attack card deals +1 damage per stack to its first hit. Then it is spent.,Claude
+stagger,Winded,energy_down,clear,3,#6fa6b6,Start your next turn with 1 less energy per stack.,Claude
+dazed,Seeing Stars,draw_down,clear,2.5,#b39ad3,Draw 1 fewer card per stack next turn.,Claude
+fortify,Tight Guard,block_gain_up,turn,1.5,#5fa898,Gain +1 extra block per stack whenever you gain block. Loses 1 stack each turn.,Claude
+thorns,Counterpunch,thorns,clear,1.5,#cf7d58,"When an enemy hits you, they take damage equal to stacks. Clears at the start of your turn.",Claude

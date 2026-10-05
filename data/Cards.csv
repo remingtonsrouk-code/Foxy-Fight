@@ -1,0 +1,36 @@
+id,name,style,tier,tags,follows,cost,effects,link_bonus,text,xp_price,upgrade_of,max_copies,art,flavor,source
+ps_step,Blow a Kiss,petal_storm,Base,Opener,START,0,block:2,gain:focus:1,,10,,,,Pucker up. It's the last free thing you get tonight.,Claude
+ps_jab,Lipstick Jab,petal_storm,Base,Light,"Opener, Light",0,dmg:1,dmg:1,,10,,,,Leaves a mark. Usually a red one.,Claude
+ps_kick,Switchblade Hook,petal_storm,Base,Light,"Opener, Light",1,dmg:3,apply:bleed:1,,10,,,,"Fast, thin, and gone before you feel it.",Claude
+ps_slash,Rhinestone Cross,petal_storm,Base,Heavy,"Light, Opener",1,dmg:4,apply:bleed:2,,10,,,,Sequins are a girl's best friend. Ask your eyebrow.,Claude
+ps_flurry,Encore,petal_storm,Base,Finisher,"Heavy, Light",2,dmgchain:2,,Deal 2 damage for each card in the chain.,10,,,,The crowd wanted more. So did she.,Claude
+ps_guard,Peek-a-Boo,petal_storm,Base,Guard,ANY,1,block:5,draw:1,,10,,,,"Hands up, eyes open, smile on.",Claude
+ps_jab_plus,Lipstick Jab+,petal_storm,Advanced,Light,"Opener, Light",0,dmg:2,dmg:1,,15,ps_jab,,,Fresh coat. Same bad news.,Claude
+ps_kick_plus,Switchblade Hook+,petal_storm,Advanced,Light,"Opener, Light",1,dmg:5,apply:bleed:2,,20,ps_kick,,,Sharper on the second pass.,Claude
+ps_slash_plus,Rhinestone Cross+,petal_storm,Advanced,Heavy,"Light, Opener",1,dmg:5,apply:bleed:3,,25,ps_slash,,,More sparkle. More stitches.,Claude
+ps_flurry_plus,Encore+,petal_storm,Advanced,Finisher,"Heavy, Light",2,dmgchain:3,,Deal 3 damage for each card in the chain.,35,ps_flurry,,,By popular demand.,Claude
+ps_guard_plus,Peek-a-Boo+,petal_storm,Advanced,Guard,ANY,1,block:7,draw:1,,20,ps_guard,,,Now you see her. Now you're on the canvas.,Claude
+ps_feint,Cherry Feint,petal_storm,Advanced,Opener,START,0,apply:exposed:1,draw:1,,20,,2,,She telegraphs the left. On purpose.,Claude
+ps_cyclone,Rat-a-Tat,petal_storm,Advanced,Light,"Light, Heavy",1,dmg:2x3,gain:focus:1,,30,,2,,Three to the jaw and a wink for the cheap seats.,Claude
+ps_leaf,Bob & Weave,petal_storm,Advanced,Wild,ANY,0,draw:1,,Any card can link after this one.,25,,2,,You can't hit a girl who's already somewhere else.,Claude
+ps_bloom,Curtain Call,sakura_tempest,Elite,Finisher,"Heavy, Finisher",3,dmg:8,dmgchain:3,,60,,1,,"Take a bow, darling. Someone will help you up.",Claude
+ps_hurricane,Standing Ovation,sakura_tempest,Elite,Finisher,"Heavy, Light",2,dmgchain:3,apply:bleed:3,Deal 3 damage for each card in the chain.,70,,1,,The whole house is on its feet. Except you.,Claude
+sl_stance,Touch Gloves,stone_lotus,Base,Opener,START,1,block:4,gain:focus:2,,10,,,,Manners first. It makes the rest so much more personal.,Claude
+sl_palm,Velvet Jab,stone_lotus,Base,Light,"Opener, Guard",1,dmg:4,apply:exposed:1,,10,,,,Soft on the outside.,Claude
+sl_slam,Liver Shot,stone_lotus,Base,Heavy,"Light, Opener",2,dmg:9,apply:stagger:1,,10,,,,"Somewhere south of the ribs, a whole evening ends.",Claude
+sl_wall,High Guard,stone_lotus,Base,Guard,ANY,1,block:6,block:2,,10,,,,"Elbows in, chin down, one eyebrow up.",Claude
+sl_throw,Last Call,stone_lotus,Base,Finisher,Heavy,1,dmg:6,apply:dazed:1; dmg:2,,10,,,,"Bar's closed, sugar. Somebody get her a cab.",Claude
+sl_breath,Smoke Break,stone_lotus,Base,Guard,START,0,block:2,draw:1,,10,,,,"One drag, one breath, one long look at the damage.",Claude
+sl_palm_plus,Velvet Jab+,stone_lotus,Advanced,Light,"Opener, Guard",1,dmg:5,apply:exposed:2,,20,sl_palm,,,Plusher glove. Same brick inside.,Claude
+sl_slam_plus,Liver Shot+,stone_lotus,Advanced,Heavy,"Light, Opener",2,dmg:11,apply:stagger:1,,30,sl_slam,,,She found the spot. She'll find it again.,Claude
+sl_wall_plus,High Guard+,stone_lotus,Advanced,Guard,ANY,1,block:8,block:3,,20,sl_wall,,,"Higher, tighter, ruder.",Claude
+sl_throw_plus,Last Call+,stone_lotus,Advanced,Finisher,Heavy,1,dmg:8,apply:dazed:1; dmg:3,,30,sl_throw,,,Closing time comes early.,Claude
+sl_thornshell,Cover Up,stone_lotus,Advanced,Guard,ANY,1,block:4; gain:thorns:2,gain:thorns:1,,30,,2,,"Go ahead, swing. I bill by the hit.",Claude
+sl_quake,Shoulder Bump,stone_lotus,Advanced,Light,"Opener, Light, Guard",1,dmg:3; apply:exposed:1,energy:1,,25,,2,,Excuse me. I said excuse me.,Claude
+sl_moss,Lean on the Ropes,stone_lotus,Advanced,Wild,ANY,0,block:2,,Any card can link after this one.,25,,2,,Let her punch herself out. Then dance.,Claude
+sl_avalanche,Ten Count,jade_colossus,Elite,Finisher,Heavy,3,dmg:14,apply:exposed:2,,70,,1,,She's never needed to count past ten.,Claude
+sl_monolith,Bouncer's Guard,jade_colossus,Elite,Guard,ANY,2,block:12; gain:fortify:2,gain:thorns:2,,60,,1,,"You're not on the list, honey.",Claude
+n_wind,Second Wind,Neutral,Advanced,Guard,ANY,1,heal:4,draw:1,,30,,1,,Smelling salts and spite.,Claude
+n_clear,Strike a Pose,Neutral,Advanced,Opener,START,0,gain:focus:2,draw:1,,25,,2,,One for the cameras. One for her.,Claude
+n_haymaker,Haymaker,Neutral,Advanced,Heavy,Light,2,dmg:10,pierce:3,,40,,1,,No subtlety. No refunds.,Claude
+n_rush,Rushdown,Neutral,Advanced,Light,ANY,1,dmg:3,energy:1,,35,,2,,Corner her. Keep her there.,Claude
