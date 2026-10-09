@@ -7,6 +7,7 @@
     "test": "node tests/run-tests.js",
     "sim": "node sim/simulate.js",
     "bake": "node tools/bake.js",
+    "art-list": "node tools/art-list.js",
     "build": "node tools/build.js && python3 tools/make_template.py"
   }
 }

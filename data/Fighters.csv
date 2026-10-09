@@ -1,0 +1,4 @@
+id,name,style,outfit_of,art,source
+# Example (rows starting with # are ignored): a custom fighter for the Cherry Bomb line with an evolved outfit.,,,,,Claude
+# roxy,Roxy Vale,petal_storm,,art/fighters/roxy.webp,Claude
+# roxy_main,Roxy Vale,sakura_tempest,roxy,art/fighters/roxy_main.webp,Claude

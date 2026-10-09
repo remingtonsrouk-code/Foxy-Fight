@@ -5,12 +5,19 @@ const D = require('../src/data.js');
 const E = require('../src/engine.js');
 const AI = require('../src/ai.js');
 const P = require('../src/progression.js');
+const C = require('../src/cutins.js');
 const loadLocal = require('../tools/load-local.js');
 
 let passed = 0, failed = 0;
+const pending = [];
 function test(name, fn) {
-  try { fn(); passed++; console.log('  ok  ' + name); }
-  catch (e) { failed++; console.log('  FAIL ' + name + '\n       ' + (e.stack || e).toString().split('\n').slice(0, 3).join('\n       ')); }
+  const ok = () => { passed++; console.log('  ok  ' + name); };
+  const fail = e => { failed++; console.log('  FAIL ' + name + '\n       ' + (e.stack || e).toString().split('\n').slice(0, 3).join('\n       ')); };
+  try {
+    const r = fn();
+    if (r && typeof r.then === 'function') pending.push(r.then(ok, fail));
+    else ok();
+  } catch (e) { fail(e); }
 }
 
 /* A tiny rules sandbox: one style, hand-picked cards, no randomness in the hand. */
@@ -405,5 +412,168 @@ test('saves survive cards being removed from the sheet', () => {
   assert.strictEqual(ch.deck.gone, undefined);
 });
 
-console.log(`\n${passed} passed, ${failed} failed`);
-process.exit(failed ? 1 : 0);
+console.log('Cut-in art');
+/* Two-style line (t evolves into t2) plus an opponent, for the art lookups. */
+const ART = {
+  Styles: 'id,name,root,hp,base_deck,evolves_to\nt,Tester,t,50,"op x4, li x4, hv x4",t2\nt2,Tester Two,t,50,"op x4, li x4, hv x4",',
+  Opponents: 'id,order,name,style,xp_reward,win_art,loss_art\no1,1,One,t,30,,\no2,2,Two,t2,40,o2_win.png,',
+};
+const CUT_HEAD = 'fighter,move,profile_0,profile_1,profile_2,pov_0,pov_1,pov_2,source';
+function art(cutRows, fighterRows, extra) {
+  const r = D.compileData(Object.assign({}, MINI, ART, {
+    CutIns: [CUT_HEAD, ...(cutRows || [])].join('\n'),
+    Fighters: ['id,name,style,outfit_of,art,source', ...(fighterRows || [])].join('\n'),
+  }, extra || {}));
+  if (r.errors.length) throw new Error(r.errors.join('; '));
+  return r;
+}
+test('sheets without CutIns or Fighters tabs still load cleanly', () => {
+  const r = D.compileData(MINI);
+  assert.deepStrictEqual(r.errors, []);
+  assert.deepStrictEqual(r.warnings, []);
+  assert.deepStrictEqual(r.data.cutins, {});
+});
+test('a play event records the attacker\'s knockdowns from before the card', () => {
+  const data = mini({ Config: ROUNDS });
+  const s = E.createMatch(data, { styleId: 't' }, { styleId: 't' }, { seed: 1, firstPlayer: 0 });
+  const me = s.fighters[0];
+  me.hand = [{ uid: 900, id: 'mh' }]; me.energy = 3; me.knockdowns = 1;
+  s.events = [];
+  E.playCard(s, data, 0);
+  assert.strictEqual(s.events.find(e => e.type === 'play').kd, 1);
+});
+test('Counterpunch can drop the attacker mid-card; the play event keeps the earlier count', () => {
+  const data = mini({ Config: ROUNDS });
+  const s = E.createMatch(data, { styleId: 't' }, { styleId: 't' }, { seed: 1, firstPlayer: 0 });
+  const me = s.fighters[0];
+  me.hand = [{ uid: 900, id: 'mh' }]; me.energy = 3; me.hp = 2;
+  s.fighters[1].statuses.thorns = 3;
+  s.events = [];
+  E.playCard(s, data, 0);
+  assert.strictEqual(me.knockdowns, 1, 'attacker went down');
+  assert.strictEqual(s.events.find(e => e.type === 'play').kd, 0);
+});
+test('CutIns moves read as card ids, tags (any case), Knockdown, Victory or blank', () => {
+  const { data, warnings } = art(['t,hv,a,,,,,,mine', 't,LIGHT,b,,,,,,mine', 't,Knockdown,c,,,,,,mine', 't,victory,d,,,,,,mine', 't,,e,,,,,,mine']);
+  assert.deepStrictEqual(warnings, []);
+  assert.deepStrictEqual(Object.keys(data.cutins.t).sort(), ['any', 'card:hv', 'knockdown', 'tag:light', 'victory']);
+});
+test('art problems are warnings, never errors', () => {
+  const r = art(['ghost,Light,a.png,,,,,,mine', 't,Uppercut,a.png,,,,,,mine', 't,Light,a.png,,,,,,mine', 't,light,b.png,,,,,,mine', 'o1,Light,x.png,,,y.png,,,mine'],
+    ['c1,Cee,nope,,,mine', 'c2,Cee,t,missing,,mine', 't,Clash,t,,,mine']);
+  assert.deepStrictEqual(r.errors, []);
+  const w = r.warnings.join('\n');
+  ['"ghost" is not a style', '"Uppercut" is not a card id', 'repeats row', 'only ever seen in POV', 'style "nope"', 'outfit_of "missing"', 'already used by a style'].forEach(s => assert(w.includes(s), 'missing warning: ' + s));
+});
+test('a tab without its key columns is ignored with a warning (Google can return the wrong tab)', () => {
+  const r = D.compileData(Object.assign({}, MINI, { CutIns: 'key,value\nhand_size,5' }));
+  assert.deepStrictEqual(r.errors, []);
+  assert(r.warnings[0].includes('CutIns tab is missing'));
+  assert.deepStrictEqual(r.data.cutins, {});
+});
+test('face chains: evolution -> base style; opponent -> her style -> base style', () => {
+  const { data } = art();
+  assert.deepStrictEqual(C.faceChain(data, { styleId: 't2' }), ['t2', 't']);
+  assert.deepStrictEqual(C.faceChain(data, { opponentId: 'o2' }), ['o2', 't2', 't']);
+});
+test('custom fighters: the outfit for this style first, then her other outfits, then the style', () => {
+  const { data } = art([], ['roxy,Roxy,t,,,mine', 'roxy2,Roxy,t2,roxy,,mine']);
+  assert.deepStrictEqual(C.faceChain(data, { styleId: 't2', look: 'roxy' }), ['roxy2', 'roxy', 't2', 't']);
+  assert.deepStrictEqual(C.faceChain(data, { styleId: 't', look: 'roxy2' }), ['roxy', 't']);
+});
+test('lookup stays on the same face: card -> upgraded card -> tag -> any, before the next face', () => {
+  const { data } = art(['t2,,t2_any.png,,,,,,mine', 't,li,t_li.png,,,,,,mine', 't2,Light,t2_light.png,,,,,,mine', 't2,li,t2_li.png,,,,,,mine']);
+  const faces = C.faceChain(data, { styleId: 't2' });
+  const q = id => C.resolveCutIn(data, faces, { kind: 'move', cardId: id, view: 'profile', slot: 0 }).src;
+  assert.strictEqual(q('li2'), 't2_li.png', 'upgrade uses its base card row');
+  assert.strictEqual(q('mh'), 't2_light.png', 'tag row on the same face beats the card row on the base style');
+  assert.strictEqual(q('hv'), 't2_any.png', 'any-move row on the same face');
+});
+test('slots fall back to the nearest lower slot, then higher', () => {
+  const { data } = art(['t,Light,l0.png,,l2.png,,p1.png,,mine']);
+  const q = (view, slot) => (C.resolveCutIn(data, ['t'], { kind: 'move', cardId: 'li', view, slot }) || {}).src;
+  assert.strictEqual(q('profile', 1), 'l0.png');
+  assert.strictEqual(q('profile', 2), 'l2.png');
+  assert.strictEqual(q('pov', 0), 'p1.png', 'higher slot when nothing lower exists');
+  assert.strictEqual(q('pov', 2), 'p1.png');
+});
+test('knockdown and victory rows only match their own event, never a move row', () => {
+  const { data } = art(['t,,any.png,,,,,,mine', 't,Knockdown,kd1.png,kd2.png,tko.png,,,,mine']);
+  assert.strictEqual(C.resolveCutIn(data, ['t'], { kind: 'knockdown', view: 'profile', slot: C.knockdownSlot(3, true) }).src, 'tko.png');
+  assert.strictEqual(C.resolveCutIn(data, ['t'], { kind: 'knockdown', view: 'profile', slot: C.knockdownSlot(2, false) }).src, 'kd2.png');
+  assert.strictEqual(C.resolveCutIn(data, ['t'], { kind: 'victory', view: 'profile', slot: 0 }), null);
+});
+test('result art: opponent win_art/loss_art, then the winner\'s Victory art, then Config defaults', () => {
+  const { data } = art(['t,Victory,me_win.png,,,,,,mine', 'o1,Victory,,,,her_win.png,,,mine'], [], { Config: MINI.Config + '\ndefault_win_art,dw.png\ndefault_loss_art,dl.png' });
+  const o1 = data.opponents[0], o2 = data.opponents[1];
+  const mine = C.faceChain(data, { styleId: 't' });
+  assert.strictEqual(C.resultArt(data, { won: true, opponent: o2, myFaces: mine, winnerKd: 0 }).src, 'o2_win.png');
+  assert.strictEqual(C.resultArt(data, { won: true, opponent: o1, myFaces: mine, winnerKd: 1 }).src, 'me_win.png');
+  assert.strictEqual(C.resultArt(data, { won: false, opponent: o1, theirFaces: C.faceChain(data, { opponentId: 'o1' }), winnerKd: 0 }).src, 'her_win.png');
+  assert.strictEqual(C.resultArt(data, { won: false, opponent: o2, theirFaces: C.faceChain(data, { opponentId: 'o2' }), winnerKd: 0 }).src, 'dl.png');
+});
+test('Google sync: optional tabs that are missing or come back as another tab are skipped', async () => {
+  const bodies = { Config: 'key,value\nhand_size,5', Styles: 'id', Cards: 'id', Statuses: 'id', Opponents: 'id', CutIns: 'key,value\nhand_size,5' };
+  const fake = async url => {
+    const tab = decodeURIComponent(url.split('sheet=')[1]);
+    if (tab === 'Fighters') return { ok: false, status: 400, text: async () => '' };
+    return { ok: true, text: async () => bodies[tab] };
+  };
+  const tables = await D.fetchSheetTables('abc', fake);
+  assert.deepStrictEqual(Object.keys(tables).sort(), ['Cards', 'Config', 'Opponents', 'Statuses', 'Styles']);
+});
+test('a path whose file is missing counts as blank, so the lookup keeps falling back', () => {
+  const { data } = art(['t,Light,l0.png,l1.png,l2.png,,,,mine', 't2,Light,m0.png,m1.png,m2.png,,,,mine']);
+  const faces = C.faceChain(data, { styleId: 't2' });
+  const q = (slot, missing) => C.resolveCutIn(data, faces, { kind: 'move', cardId: 'li', view: 'profile', slot }, missing).src;
+  assert.strictEqual(q(2, new Set(['m2.png'])), 'm1.png', 'same face, lower slot first');
+  assert.strictEqual(q(2, new Set(['m0.png', 'm1.png', 'm2.png'])), 'l2.png', 'then the style she evolved from');
+  assert.strictEqual(q(0, src => src.startsWith('m')), 'l0.png', 'a function works too');
+  assert.deepStrictEqual(C.candidates(data, faces, 'profile'), ['m0.png', 'm1.png', 'm2.png', 'l0.png', 'l1.png', 'l2.png']);
+});
+test('result art skips a missing win_art file too', () => {
+  const { data } = art(['t2,Victory,me_win.png,,,,,,mine']);
+  const r = C.resultArt(data, { won: true, opponent: data.opponents[1], myFaces: ['t2'], winnerKd: 0, missing: new Set(['o2_win.png']) });
+  assert.strictEqual(r.src, 'me_win.png');
+});
+test('a synced sheet without CutIns or Fighters borrows the built-in tabs; its own tabs win', () => {
+  const builtIn = { CutIns: CUT_HEAD + '\nt,Light,built.png,,,,,,Claude', Fighters: 'id,name,style,outfit_of,art,source' };
+  const borrowed = D.fillOptionalTabs(Object.assign({}, MINI, ART), builtIn);
+  assert.strictEqual(D.compileData(borrowed).data.cutins.t['tag:light'].profile[0], 'built.png');
+  const own = D.fillOptionalTabs(Object.assign({}, MINI, ART, { CutIns: CUT_HEAD + '\nt,Light,mine.png,,,,,,mine' }), builtIn);
+  assert.strictEqual(D.compileData(own).data.cutins.t['tag:light'].profile[0], 'mine.png');
+  const wrongTab = D.fillOptionalTabs(Object.assign({}, MINI, ART, { CutIns: 'key,value\nhand_size,5' }), builtIn);
+  assert.strictEqual(D.compileData(wrongTab).data.cutins.t['tag:light'].profile[0], 'built.png', 'a tab Google swapped in does not count');
+});
+test('shipped CutIns: every picture has a path in a readable fighter folder; opponents have no profile paths', () => {
+  const r = loadLocal();
+  const plan = C.artPlan(r.data);
+  assert.strictEqual(new Set(plan.map(f => f.folder)).size, plan.length, 'folder names are unique');
+  assert.strictEqual(plan.find(f => f.fighter === 'petal_storm').folder, 'cherry-bomb');
+  plan.forEach(f => f.rows.forEach(row => {
+    const k = row.kind === 'card' ? 'card:' + row.move : row.kind === 'tag' ? 'tag:' + row.tag : row.kind;
+    const cells = r.data.cutins[f.fighter][k];
+    ['profile', 'pov'].forEach(view => [0, 1, 2].forEach(s => {
+      if (f.views.includes(view)) assert.strictEqual(cells[view][s], C.artPath(r.data, f, row, view, s, 'png'));
+      else assert.strictEqual(cells[view][s], '', `${f.fighter} ${row.move} has a ${view} path`);
+    }));
+  }));
+});
+test('the shipped art plan: 345 images, and CutIns has a row for every one', () => {
+  const r = loadLocal();
+  const plan = C.artPlan(r.data);
+  const total = plan.reduce((n, f) => n + f.rows.length * f.views.length * C.CUTIN_SLOT_COUNT, 0);
+  assert.strictEqual(total, 345);
+  plan.forEach(f => f.rows.forEach(row => {
+    const k = row.kind === 'card' ? 'card:' + row.move : row.kind === 'tag' ? 'tag:' + row.tag : row.kind;
+    assert(r.data.cutins[f.fighter] && r.data.cutins[f.fighter][k], `no CutIns row for ${f.fighter} ${row.move}`);
+  }));
+  const ruby = plan.find(f => f.fighter === 'opp_jade');
+  assert.deepStrictEqual(ruby.views, ['pov']);
+  assert(ruby.rows.some(x => x.move === 'sl_monolith'), 'Monolith (Elite Guard) gets its own row');
+});
+
+Promise.all(pending).then(() => {
+  console.log(`\n${passed} passed, ${failed} failed`);
+  process.exit(failed ? 1 : 0);
+});

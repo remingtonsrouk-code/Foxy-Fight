@@ -1,6 +1,6 @@
 """Builds Foxy_Fight_Sheet_Template.xlsx from data/*.csv.
 Upload it to Google Drive and open with Google Sheets (or File > Import).
-Every cell is stored as plain text so Google's CSV export never drops values
+Every data cell is stored as plain text so Google's CSV export never drops values
 in columns that mix numbers and words."""
 import csv, os, sys
 from openpyxl import Workbook
@@ -9,10 +9,14 @@ from openpyxl.utils import get_column_letter
 
 ROOT = os.path.join(os.path.dirname(__file__), '..')
 OUT = sys.argv[1] if len(sys.argv) > 1 else os.path.join(ROOT, 'dist', 'Foxy_Fight_Sheet_Template.xlsx')
-TABS = ['Config', 'Styles', 'Cards', 'Statuses', 'Opponents']
-HEAD_FILL = {'Config': 'F3E2B8', 'Styles': 'F2C9D1', 'Cards': 'EBD8AE', 'Statuses': 'CFE6E0', 'Opponents': 'E6D3EE'}
+TABS = ['Config', 'Styles', 'Cards', 'Statuses', 'Opponents', 'CutIns', 'Fighters']
+OPTIONAL = {'CutIns', 'Fighters'}
+HEAD_FILL = {'Config': 'F3E2B8', 'Styles': 'F2C9D1', 'Cards': 'EBD8AE', 'Statuses': 'CFE6E0', 'Opponents': 'E6D3EE',
+             'CutIns': 'F6D6B8', 'Fighters': 'D8E2F2'}
 WIDTHS = {'description': 60, 'effects': 26, 'link_bonus': 26, 'base_deck': 70, 'deck': 70, 'text': 34, 'flavor': 34,
-          'intro': 40, 'win_art': 22, 'loss_art': 22, 'rounds': 9, 'notes': 70, 'follows': 20, 'name': 20, 'title': 18, 'on_turn_start': 18, 'on_link': 18}
+          'intro': 40, 'win_art': 22, 'loss_art': 22, 'rounds': 9, 'notes': 70, 'follows': 20, 'name': 20, 'title': 18, 'on_turn_start': 18, 'on_link': 18,
+          'fighter': 18, 'move': 14, 'profile_0': 46, 'profile_1': 46, 'profile_2': 46, 'pov_0': 46, 'pov_1': 46, 'pov_2': 46,
+          'outfit_of': 14, 'style': 16}
 
 wb = Workbook()
 guide = wb.active
@@ -59,8 +63,17 @@ lines = [
     ('decay: turn (lose 1 stack at the start of the owner\'s turn), clear (remove at the start of the owner\'s turn), consume (used up by the next attack), none', False),
     ('', False),
     ('Art', True),
-    ('Put an image filename (e.g. ps_jab.png, served from the game\'s art/ folder) or a full https:// image link in the art column. Blank = generated art-deco art.', False),
+    ('Put an image filename (e.g. ps_jab.png, served from the game\'s art/ folder) or a full https:// image link in the art column. Blank = generated art-deco art. A value with a / in it (art/cutins/...) is used as a path from the game folder.', False),
     ('End-of-fight images: Opponents tab win_art (shown when you beat her) and loss_art (shown when she beats you). Config default_win_art / default_loss_art cover any blanks. Wide 16:9 images work best.', False),
+    ('', False),
+    ('Cut-in art (CutIns and Fighters tabs)', True),
+    ('You don\'t need to edit anything here to add art. Every picture already has its path in CutIns. Drop the files into the game\'s art/cutins/<fighter>/ folders with the names listed in each folder\'s README.txt and upload. A picture that isn\'t there yet is skipped and the nearest one is used instead.', False),
+    ('If your own Google Sheet has no CutIns or Fighters tab, the game uses its built-in copy. Add these tabs to your sheet only if you want to change paths.', False),
+    ('CutIns: one row per fighter + move. fighter = a style id, an opponent id or a Fighters id. move = a card id, a tag (Opener, Light, Heavy, Finisher, Guard, Wild), Knockdown, Victory, or blank for any move. profile_0..2 / pov_0..2 = image paths or https:// links.', False),
+    ('The numbers: on card and tag rows, knockdowns that fighter has taken (0 fresh, 1 worn, 2 battered). Knockdown row: 0 = first knockdown, 1 = second, 2 = T.K.O. Victory row: the knockdowns the winner took.', False),
+    ('Your fighter is always shown in profile, the opponent in POV. Ladder opponents only have pov paths. Upgrades (+) use their base card\'s row; Finishers and Elites have their own rows.', False),
+    ('Fighters: custom looks a player can pick. style = the style she dresses. outfit_of = the Fighters id this is an evolved outfit of (blank for her base look). Her rows use tags, not cards. Run npm run art-list after adding one to get her paths and folder.', False),
+    ('Art problems never block the sheet: a typo shows as a warning and that picture falls back.', False),
 ]
 for i, (t, bold) in enumerate(lines, start=1):
     c = guide.cell(row=i, column=1, value=t)
@@ -68,10 +81,7 @@ for i, (t, bold) in enumerate(lines, start=1):
     c.alignment = Alignment(wrap_text=True, vertical='top')
 guide.column_dimensions['A'].width = 120
 
-for tab in TABS:
-    ws = wb.create_sheet(tab)
-    with open(os.path.join(ROOT, 'data', tab + '.csv'), newline='', encoding='utf-8') as f:
-        rows = list(csv.reader(f))
+def text_tab(ws, rows, fill):
     for r, row in enumerate(rows, start=1):
         for c, val in enumerate(row, start=1):
             cell = ws.cell(row=r, column=c, value=val)
@@ -79,14 +89,23 @@ for tab in TABS:
             cell.alignment = Alignment(vertical='top', wrap_text=(len(val) > 40))
             if r == 1:
                 cell.font = Font(bold=True)
-                cell.fill = PatternFill('solid', fgColor=HEAD_FILL[tab])
+                cell.fill = PatternFill('solid', fgColor=fill)
+
+for tab in TABS:
+    path = os.path.join(ROOT, 'data', tab + '.csv')
+    if tab in OPTIONAL and not os.path.exists(path):
+        continue
+    ws = wb.create_sheet(tab)
+    with open(path, newline='', encoding='utf-8') as f:
+        rows = list(csv.reader(f))
+    text_tab(ws, rows, HEAD_FILL[tab])
     # pre-format extra empty rows as text too, so new entries stay text
     for r in range(len(rows) + 1, len(rows) + 60):
         for c in range(1, len(rows[0]) + 1):
             ws.cell(row=r, column=c).number_format = '@'
     for c, h in enumerate(rows[0], start=1):
         ws.column_dimensions[get_column_letter(c)].width = WIDTHS.get(h, max(10, len(h) + 4))
-    ws.freeze_panes = 'B2'
+    ws.freeze_panes = 'C2' if tab == 'CutIns' else 'B2'
 
 os.makedirs(os.path.dirname(OUT), exist_ok=True)
 wb.save(OUT)

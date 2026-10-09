@@ -415,7 +415,10 @@
 
     const cfg = data.config;
     const comboBonus = linked ? Math.min(cfg.combo_damage_cap, Math.floor(Math.max(0, me.chain.length - 1) * cfg.combo_damage_per_link)) : 0;
-    emit(state, { type: 'play', who: me.index, uid: inst.uid, cardId: card.id, linked, chain: me.chain.length, comboBonus });
+    // kd = the attacker's knockdowns before this card resolves. The screen reads
+    // events only after the whole card is done, and Counterpunch can drop the
+    // attacker mid-card, so the cut-in art needs the count from this moment.
+    emit(state, { type: 'play', who: me.index, uid: inst.uid, cardId: card.id, linked, chain: me.chain.length, comboBonus, kd: me.knockdowns });
 
     const ctx = { me, opp, cardId: card.id, comboBonus, firstHit: true, attacked: false };
     resolveEffects(state, data, card.effects, ctx);

@@ -40,6 +40,10 @@ both work.
 | Cards | Every card: tags, what it follows, cost, effects, link bonus, shop price, upgrade path, art |
 | Statuses | Bleed, Exposed, Focus and friends, built from reusable behaviors |
 | Opponents | The ladder: order, style, deck, HP bonus, AI personality, XP reward, intro line, end-of-fight art (`win_art` when you beat her, `loss_art` when she beats you) |
+| CutIns *(optional)* | Cut-in art: one row per fighter + move, with `profile_0..2` and `pov_0..2` image paths (all pre-filled) |
+| Fighters *(optional)* | Custom looks a player can pick for a style, with optional evolved outfits (`outfit_of`) |
+
+Sheets without CutIns or Fighters still load, and use the game's built-in copy of those tabs.
 
 The **How to use** tab in the template covers the effect syntax. In short:
 `dmg:5`, `dmg:2x3`, `pierce:4`, `dmgchain:2`, `block:5`, `heal:4`, `draw:1`,
@@ -53,6 +57,41 @@ their original names so every deck list and reference still works.
 
 Every tab has a `source` column. Set it to `mine` on rows you write or edit
 and Claude will leave that row's text alone.
+
+## Cut-in art
+
+A picture pops up when a card is played, on a knockdown and on the result
+screen. *(The paths, folders and lookups are in place; the fight screen starts
+showing them in the next update.)*
+
+**Adding art takes no editing.** Every picture already has its path in the
+CutIns tab, and `art/cutins/` has a folder per fighter (`cherry-bomb/`,
+`lola-lux/` ...) whose `README.txt` lists the exact file names and what each
+one shows. Drop finished files in with those names and upload the art folder
+to GitHub. A picture that isn't there yet is skipped and the nearest one is
+used instead (a lower fatigue level, then the tag picture, then the style she
+evolved from), or a generated cut-in if there's none. Your Google Sheet doesn't
+need the CutIns or Fighters tab; without them the game uses its built-in copy.
+
+- **Face rule:** your fighter is always shown in profile, the opponent always in
+  POV, coming at you. A card shows the attacker, a knockdown shows the fighter
+  going down, the result screen shows the winner.
+- **Pictures per fighter:** one set per tag, plus their own sets for every
+  Finisher and Elite card (upgrades share their base card's set), plus
+  Knockdown and Victory. Ladder opponents only need POV.
+- **`_0 _1 _2`:** on moves, the knockdowns that fighter has taken (fresh, worn,
+  battered). Knockdown: first, second, T.K.O. Victory: the knockdowns the
+  winner took.
+- **Format:** PNG, 16:9, 1280 × 720, lowercase names exactly as listed (GitHub
+  Pages is case-sensitive). `npm run art-list -- --ext webp` switches the
+  listed paths to another format.
+- **Art problems are warnings, never errors.** A typo won't stop the sheet
+  loading; that picture just falls back.
+
+`npm run art-list` keeps it all in step and is safe to rerun: it adds rows for
+anything new (a card, style, opponent or custom fighter), fills blank paths,
+rewrites each folder's list with ticks for the files already there, and writes
+`art/ART_LIST.csv`. It never changes a filled cell or a row marked `mine`.
 
 ## Rules in one paragraph
 
@@ -96,6 +135,7 @@ npm test                      # rules tests
 npm run sim                   # AI-vs-AI report from data/*.csv
 node sim/simulate.js --sheet "<google sheet link>" --games 500
 node sim/simulate.js --mode ladder --out report.md
+npm run art-list              # cut-in paths, per-folder file lists, progress
 ```
 
 The report shows style-vs-style win rates, chain statistics, first-player win
@@ -108,17 +148,18 @@ numbers for the shipped data.
 | Path | Purpose |
 |---|---|
 | `index.html` | The game |
-| `src/data.js` | Sheet/CSV loading, effect parsing, validation |
+| `src/data.js` | Sheet/CSV loading, effect parsing, validation (including the optional CutIns and Fighters tabs) |
 | `src/engine.js` | Rules engine (pure functions, shared by game, AI and simulator) |
 | `src/ai.js` | Opponent AI: searches play orders on a copy of the match |
 | `src/progression.js` | Characters, XP, shop, upgrades, deck building, evolution, save codes |
+| `src/cutins.js` | Cut-in art lookups: face chains, fallback order, result-screen art, the art plan |
 | `src/net.js`, `src/vendor/peerjs.min.js` | Versus connection (PeerJS, MIT licence) |
 | `src/ui.js`, `src/styles.css`, `src/art.js` | Interface, cabaret theme, generated art-deco placeholder art |
 | `src/baked-data.js` | Built-in copy of `data/*.csv` (regenerate with `npm run bake`) |
 | `data/*.csv` | The sample data, one file per tab |
-| `art/` | Drop real art here and reference it from the `art` columns |
+| `art/` | Drop real art here and reference it from the `art` columns; `art/cutins/<fighter>/` for cut-ins (each folder's README.txt lists its files) |
 | `sim/simulate.js` | Balance simulator |
 | `tests/run-tests.js` | Rules tests |
-| `tools/` | Bake, single-file build, template builder, `reskin_foxy.py` (the theme text pass) |
+| `tools/` | Bake, single-file build, template builder, art list, `reskin_foxy.py` (the theme text pass) |
 
 After editing `data/*.csv` directly, run `npm run bake` so the built-in data matches.

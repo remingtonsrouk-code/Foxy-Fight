@@ -9,7 +9,18 @@
 })(typeof self !== 'undefined' ? self : this, function () {
   'use strict';
 
-  const TABS = ['Config', 'Styles', 'Cards', 'Statuses', 'Opponents'];
+  /* REQUIRED_TABS must exist. OPTIONAL_TABS may be missing (older sheets keep
+   * working); TABS lists them all, so CSV loading and baking pick them up. */
+  const REQUIRED_TABS = ['Config', 'Styles', 'Cards', 'Statuses', 'Opponents'];
+  const OPTIONAL_TABS = ['CutIns', 'Fighters'];
+  const TABS = REQUIRED_TABS.concat(OPTIONAL_TABS);
+  /* A tab only counts as present when its header has these columns. Google's
+   * export can hand back a different tab when the asked-for one doesn't exist. */
+  const TAB_SIGNATURE = { CutIns: ['fighter', 'move'], Fighters: ['id', 'style', 'outfit_of'] };
+  /* Cut-in art: each CutIns row has profile_0..2 and pov_0..2. */
+  const CUTIN_SLOTS = 3;
+  const CUTIN_VIEWS = ['profile', 'pov'];
+  const CUTIN_EVENTS = ['knockdown', 'victory'];
   const STATUS_BEHAVIORS = ['dot', 'damage_taken_up', 'damage_dealt_up', 'energy_down', 'draw_down', 'block_gain_up', 'thorns'];
   const STATUS_DECAYS = ['turn', 'clear', 'consume', 'none'];
   const BENEFICIAL = ['damage_dealt_up', 'block_gain_up', 'thorns'];
@@ -127,14 +138,101 @@
     }).join(' ');
   }
 
+  function headerKeys(rows) {
+    return rows.length ? rows[0].map(h => String(h).trim().toLowerCase().replace(/\s+/g, '_')) : [];
+  }
+  function hasSignature(tab, rows) {
+    const need = TAB_SIGNATURE[tab];
+    if (!need) return true;
+    const head = headerKeys(rows);
+    return need.every(c => head.includes(c));
+  }
+
+  /* ---------- cut-in art (CutIns + Fighters tabs) ----------
+   * Art problems are warnings, never errors: a typo in an image row must not
+   * stop the sheet loading. The fight runs and that image falls back. */
+  function compileArt(T, data, warnings) {
+    const { styles, cards, opponents } = data;
+    const oppIds = new Set(opponents.map(o => o.id));
+
+    // Fighters: custom looks that dress a style.
+    const fighters = {}, fighterList = [];
+    T.Fighters.forEach(r => {
+      const id = (r.id || '').trim();
+      if (!id) return;
+      const where = `Fighters row ${r._row} (${id})`;
+      if (fighters[id]) { warnings.push(`${where}: duplicate id, row ignored.`); return; }
+      if (styles[id] || oppIds.has(id)) { warnings.push(`${where}: id is already used by a style or opponent, row ignored.`); return; }
+      const style = (r.style || '').trim();
+      if (!styles[style]) { warnings.push(`${where}: style "${style}" is not in the Styles tab, row ignored.`); return; }
+      const f = { id, name: r.name || id, style, outfitOf: (r.outfit_of || '').trim(), art: r.art || '', row: r._row };
+      fighters[id] = f; fighterList.push(f);
+    });
+    fighterList.forEach(f => {
+      if (!f.outfitOf) return;
+      const where = `Fighters row ${f.row} (${f.id})`;
+      if (!fighters[f.outfitOf]) { warnings.push(`${where}: outfit_of "${f.outfitOf}" is not a Fighters id, so it was ignored.`); f.outfitOf = ''; return; }
+      const seen = new Set([f.id]);
+      for (let g = fighters[f.outfitOf]; g; g = fighters[g.outfitOf]) {
+        if (seen.has(g.id)) { warnings.push(`${where}: outfit_of loops back on itself, so it was ignored.`); f.outfitOf = ''; return; }
+        seen.add(g.id);
+      }
+      const rootOf = sid => styles[sid].root;
+      if (rootOf(fighters[f.outfitOf].style) !== rootOf(f.style)) warnings.push(`${where}: its style and the style of "${f.outfitOf}" are in different style lines.`);
+    });
+    fighterList.forEach(f => {
+      let g = f;
+      while (g.outfitOf) g = fighters[g.outfitOf];
+      f.family = g.id;
+    });
+
+    // CutIns: one row per fighter + move.
+    const tagNames = {};
+    data.cardList.forEach(c => c.tags.forEach(t => { tagNames[key(t)] = t; }));
+    const cutins = {};
+    T.CutIns.forEach(r => {
+      const fighter = (r.fighter || '').trim();
+      const moveRaw = (r.move || '').trim();
+      const where = `CutIns row ${r._row}`;
+      if (!fighter) { warnings.push(`${where}: no fighter, row ignored.`); return; }
+      const kind = styles[fighter] ? 'style' : (oppIds.has(fighter) ? 'opponent' : (fighters[fighter] ? 'custom' : ''));
+      if (!kind) warnings.push(`${where}: fighter "${fighter}" is not a style, opponent or Fighters id.`);
+      let move;
+      if (!moveRaw) move = 'any';
+      else if (cards[moveRaw]) move = 'card:' + moveRaw;
+      else if (tagNames[key(moveRaw)]) move = 'tag:' + key(moveRaw);
+      else if (CUTIN_EVENTS.includes(key(moveRaw))) move = key(moveRaw);
+      else { warnings.push(`${where} (${fighter}): move "${moveRaw}" is not a card id, a tag, Knockdown, Victory or blank. Row ignored.`); return; }
+      const slots = view => Array.from({ length: CUTIN_SLOTS }, (_, i) => String(r[`${view}_${i}`] || '').trim());
+      const entry = { profile: slots('profile'), pov: slots('pov'), row: r._row };
+      const byFighter = cutins[fighter] || (cutins[fighter] = {});
+      if (byFighter[move]) { warnings.push(`${where} (${fighter} ${moveRaw || 'any move'}): repeats row ${byFighter[move].row}, so it was ignored.`); return; }
+      if (kind === 'opponent' && entry.profile.some(Boolean)) warnings.push(`${where} (${fighter}): ladder opponents are only ever seen in POV, so the profile art here is never shown.`);
+      byFighter[move] = entry;
+    });
+    data.fighters = fighters;
+    data.fighterList = fighterList;
+    data.cutins = cutins;
+  }
+
   /* ---------- compile ---------- */
   function compileData(tables, meta) {
     const errors = [], warnings = [];
     const T = {};
     TABS.forEach(t => {
       const raw = tables[t];
-      if (raw == null) { errors.push(`Missing tab "${t}".`); T[t] = []; return; }
-      T[t] = Array.isArray(raw) ? raw : rowsToObjects(parseCSV(raw));
+      const optional = OPTIONAL_TABS.includes(t);
+      if (raw == null || (optional && String(raw).trim() === '')) {
+        if (!optional) errors.push(`Missing tab "${t}".`);
+        T[t] = []; return;
+      }
+      if (Array.isArray(raw)) { T[t] = raw; return; }
+      const rows = parseCSV(raw);
+      if (optional && !hasSignature(t, rows)) {
+        warnings.push(`The ${t} tab is missing its ${TAB_SIGNATURE[t].join(', ')} column${TAB_SIGNATURE[t].length > 1 ? 's' : ''}, so it was ignored.`);
+        T[t] = []; return;
+      }
+      T[t] = rowsToObjects(rows);
     });
 
     TABS.forEach(t => T[t].forEach(r => {
@@ -277,7 +375,21 @@
         s.onLink.length ? `On every link: ${describeEffects(s.onLink, data)}` : '',
       ].filter(Boolean).join(' ');
     });
+    compileArt(T, data, warnings);
     return { data, errors, warnings };
+  }
+
+  /* A sheet (or CSV set) that doesn't have an optional tab borrows the
+   * built-in copy, so the art paths shipped with the game work without
+   * adding the CutIns or Fighters tab to your own sheet. A tab the sheet does
+   * have always wins. */
+  function fillOptionalTabs(tables, defaults) {
+    const out = Object.assign({}, tables);
+    OPTIONAL_TABS.forEach(t => {
+      const has = out[t] != null && String(out[t]).trim() !== '' && (Array.isArray(out[t]) || hasSignature(t, parseCSV(out[t])));
+      if (!has && defaults && defaults[t] != null) out[t] = defaults[t];
+    });
+    return out;
   }
 
   /* ---------- Google Sheets ---------- */
@@ -293,19 +405,30 @@
     const f = fetchFn || fetch;
     const id = extractSheetId(sheetIdOrUrl);
     const tables = {};
-    await Promise.all(TABS.map(async tab => {
+    await Promise.all(REQUIRED_TABS.map(async tab => {
       const res = await f(sheetCsvUrl(id, tab));
       if (!res.ok) throw new Error(`Couldn't read the "${tab}" tab (HTTP ${res.status}). Is the sheet shared as "Anyone with the link can view"?`);
       const text = await res.text();
       if (/^\s*</.test(text)) throw new Error(`The "${tab}" tab came back as a web page, not data. Check the sheet is shared publicly and the tab name is exactly "${tab}".`);
       tables[tab] = text;
     }));
+    // Optional tabs: a sheet without them is fine. Google answers a missing tab
+    // name with some other tab, so only keep text whose header matches.
+    await Promise.all(OPTIONAL_TABS.map(async tab => {
+      try {
+        const res = await f(sheetCsvUrl(id, tab));
+        if (!res.ok) return;
+        const text = await res.text();
+        if (/^\s*</.test(text) || !hasSignature(tab, parseCSV(text))) return;
+        tables[tab] = text;
+      } catch (e) { /* treat as absent */ }
+    }));
     return tables;
   }
 
   return {
-    TABS, EFFECT_OPS, STATUS_BEHAVIORS, STATUS_DECAYS,
-    parseCSV, rowsToObjects, parseEffects, parseDeckList, describeEffects, compileData,
+    TABS, REQUIRED_TABS, OPTIONAL_TABS, CUTIN_SLOTS, CUTIN_VIEWS, CUTIN_EVENTS, EFFECT_OPS, STATUS_BEHAVIORS, STATUS_DECAYS,
+    parseCSV, rowsToObjects, parseEffects, parseDeckList, describeEffects, compileData, fillOptionalTabs,
     extractSheetId, sheetCsvUrl, fetchSheetTables,
   };
 });
