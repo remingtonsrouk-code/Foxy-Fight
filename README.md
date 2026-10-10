@@ -65,6 +65,12 @@ screen. **Sheet & saves → Cut-in art** sets how often (every card, big hits
 only, or off) and has a **Check art files** button that lists, per fighter,
 any picture the game can't find, with its exact expected path.
 
+Timing: a card cut-in shows for about a second (the next card replaces it), a
+knockdown for 1.7 seconds. The T.K.O. you land (`knockdown_pov_2`) stays up for
+Config `tko_cutin_seconds` (default 10) before the result screen; click or press
+a key to skip. The T.K.O. you take stays about 2.5 seconds. Animated GIF/WebP
+cut-ins restart from their first frame every time they show.
+
 **Adding art takes no editing.** Every picture already has its path in the
 CutIns tab, and `art/cutins/` has a folder per fighter (`cherry-bomb/`,
 `lola-lux/` ...) whose `README.txt` lists the exact file names and what each

@@ -313,3 +313,11 @@ Recommended plan, awaiting Owl's pick of where to start:
   now takes each picture's own shape (max 600 px wide / 62% of screen high,
   52% on phones) and the result screen shows the whole picture too (the
   generated spotlight only shows when there's no picture). CSS only.
+  Owl's T.K.O. GIF (Knockdown pov_2) runs ~6 s but showed ~2.4 s: new Config
+  `tko_cutin_seconds` (default 10; row added to Config.csv) holds the T.K.O.
+  you land before the result screen; click/keyup skips (not pointerdown/
+  keydown, so the press can't hit a result button); the T.K.O. you take
+  stays ~2.4 s. Animated .gif/.webp cut-ins are downloaded as data and shown
+  from a fresh object URL so they always start at frame 0. Note: the
+  project's `data/Config.csv` upload is read-only to Claude, so the copy with
+  the new row is in Owl's zip and in `src/baked-data.js`.

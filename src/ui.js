@@ -546,6 +546,17 @@
   const CUTIN_MODES = ['all', 'big', 'off'];
   function cutinMode() { const m = store.get('foxyfight.cutins'); return CUTIN_MODES.includes(m) ? m : 'all'; }
   const artStatus = new Map();   // file -> 'ok' | 'missing'
+  /* Animated pictures (.gif / .webp) are kept as downloaded data and shown from
+   * a fresh copy each time, so the animation always starts at its first frame
+   * (browsers otherwise share one running animation per file). */
+  const animBlobs = new Map();   // file -> Blob (null while downloading)
+  const isAnimFile = src => /\.(gif|webp)$/i.test(src) && /^https?:$/.test(location.protocol) && !/^https?:/i.test(src);
+  function fetchAnim(src) {
+    if (animBlobs.has(src) || !isAnimFile(src)) return;
+    animBlobs.set(src, null);
+    fetch(CB.artSrc(src)).then(r => (r.ok ? r.blob() : null))
+      .then(bl => { if (bl) animBlobs.set(src, bl); else animBlobs.delete(src); }, () => animBlobs.delete(src));
+  }
   const artWaiting = new Map();  // file -> Promise<boolean>
 
   function probeArt(src, fresh) {
@@ -621,6 +632,7 @@
       hits.forEach(h => {
         if (!h || c.preloaded.has(h.src)) return;
         c.preloaded.add(h.src);
+        if (isAnimFile(h.src)) { fetchAnim(h.src); return; }
         const im = new Image(); im.src = CB.artSrc(h.src); c.keep.push(im);
       });
     });
@@ -646,7 +658,11 @@
     const el = cutinEl();
     const img = el.querySelector('img');
     el.className = `cutin ${item.side === 0 ? 'mine' : 'theirs'} kind-${item.kind}`;
-    img.src = CB.artSrc(item.src);
+    const old = showCutIn.url;
+    const bl = animBlobs.get(item.src);
+    showCutIn.url = bl ? URL.createObjectURL(bl) : '';
+    img.src = showCutIn.url || CB.artSrc(item.src);
+    if (old) URL.revokeObjectURL(old);
     el.querySelector('.cutin-cap').textContent = item.caption || '';
     el.hidden = false;
     void el.offsetWidth; el.classList.add('go');
@@ -678,7 +694,7 @@
       const last = i === items.length - 1;
       const hold = it.kind === 'tko' ? 0 : it.kind === 'knockdown' ? 1700 : (last ? 950 : 650);
       c.timers.push(setTimeout(() => { if (app.battle === b) showCutIn(it); }, t));
-      if (it.kind === 'tko') { b.tkoCutIn = true; return; }   // stays up until the result screen
+      if (it.kind === 'tko') { b.tkoCutIn = { at: t, pov: it.side === 1 }; return; }   // stays up until the result screen
       t += hold;
       if (last) c.timers.push(setTimeout(() => { const el = document.getElementById('cutin'); if (el && app.battle === b) { el.hidden = true; el.classList.remove('go'); } }, t));
     });
@@ -968,9 +984,18 @@
   }
 
   function showResult(b, won, middle, buttons) {
-    // after a T.K.O. cut-in, give it time on screen before the result card covers it
-    const delay = b.tkoCutIn ? 3000 : 900;
-    setTimeout(() => {
+    // After a T.K.O. cut-in, give it time on screen before the result card covers
+    // it: Config tko_cutin_seconds for the T.K.O. you land (POV, default 10),
+    // about 2.4 s for the one you take. Clicking or pressing a key skips ahead.
+    const tk = b.tkoCutIn;
+    const secs = Number(app.data.config.tko_cutin_seconds);
+    const delay = tk ? tk.at + (tk.pov ? Math.max(1, Number.isFinite(secs) && secs > 0 ? secs : 10) * 1000 : 2400) : 900;
+    let shown = false;
+    const handle = setTimeout(() => show(), delay);
+    if (tk) b.showResultNow = () => { clearTimeout(handle); show(); };
+    function show() {
+      if (shown) return;
+      shown = true; b.showResultNow = null;
       if (app.battle !== b) return;
       hideCutIn();
       document.querySelectorAll('.overlay').forEach(o => o.remove());
@@ -986,7 +1011,7 @@
       </div>`;
       document.body.appendChild(ov);
       ov.querySelector('.btn').focus();
-    }, delay);
+    }
   }
 
   function resultReason(s) {
@@ -1616,6 +1641,11 @@
         : `<p class="muted">You don't have a fighter yet. Pick one on the main screen first, or choose a Fair fight.</p>`;
     }
   });
+  // Skip the end-of-fight T.K.O. cut-in straight to the result screen. Uses
+  // click and keyup (not pointerdown/keydown) so the same press can't also hit
+  // a button on the result card that appears under it.
+  document.addEventListener('click', () => { if (app.battle && app.battle.showResultNow) app.battle.showResultNow(); }, true);
+  document.addEventListener('keyup', () => { if (app.battle && app.battle.showResultNow) app.battle.showResultNow(); });
   document.addEventListener('keydown', e => {
     if (app.view !== 'battle' || !app.battle || e.target.closest('input, textarea')) return;
     if (document.querySelector('.overlay')) return;

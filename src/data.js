@@ -254,6 +254,7 @@
       exchanges_per_round: 3, rounds: 3, corner_heal_percent: 10, corner_clears_statuses: 2, corner_reshuffle: true,
       pvp_turn_seconds: 90, pvp_disconnect_seconds: 60, pvp_xp_win: 10, pvp_xp_loss: 5,
       alternate_round_start: true, knockdowns_for_tko: 3, knockdown_recover_percent: 15, knockdown_clears_statuses: true,
+      tko_cutin_seconds: 10,
     };
     Object.keys(defaults).forEach(k => { if (config[k] === undefined) config[k] = defaults[k]; });
 

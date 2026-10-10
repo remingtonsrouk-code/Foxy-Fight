@@ -27,6 +27,7 @@ alternate_round_start,TRUE,TRUE = the other fighter leads off each new round,Cla
 knockdowns_for_tko,3,Knockdown number that ends the fight (T.K.O.). 0 or 1 = hitting 0 HP is an immediate K.O.,Claude
 knockdown_recover_percent,15,Percent of max HP a fighter gets up with after a knockdown,Claude
 knockdown_clears_statuses,TRUE,TRUE = a knocked-down fighter's statuses are cleared,Claude
+tko_cutin_seconds,10,"Seconds the T.K.O. cut-in you land (Knockdown pov_2) stays up before the result screen. Click or press a key to skip. The T.K.O. you take stays about 2.5 seconds",Claude
 pvp_turn_seconds,90,Versus: seconds per turn before it ends automatically. 0 = no clock,Claude
 pvp_disconnect_seconds,60,Versus: how long to wait for a dropped player before the other wins by forfeit,Claude
 pvp_xp_win,10,"Versus: XP for a win, added to the character you fought with",Claude
