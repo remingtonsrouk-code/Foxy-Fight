@@ -37,7 +37,7 @@ text, decks, art, ladder, rules settings.
   hosted inside Claude.
 - **Look:** cabaret/speakeasy — gold and cream on oxblood black, art-deco frames,
   Limelight (display) + Josefin Sans (body). Single dark theme by design.
-- **Quality:** 60 rules tests pass (`npm test`); AI-vs-AI simulator
+- **Quality:** 61 rules tests pass (`npm test`); AI-vs-AI simulator
   (`npm run sim`); browser playthroughs of ladder, rounds and two-browser Versus.
 
 Owl has cleared the ladder as Cherry Bomb, evolved to Main Event, and tested
@@ -138,7 +138,7 @@ look-ahead, the simulator and Versus lockstep.
 | `src/ui.js` | All screens; battle view uses `b.me` so the local player is always at the bottom (needed for Versus) |
 | `src/net.js` + `src/vendor/peerjs.min.js` | Versus transport (PeerJS, MIT) |
 | `src/art.js`, `src/styles.css` | Generated art-deco art; theme |
-| `src/cutins.js` | Cut-in art lookups: face chains, fallback order, result art, art plan (not yet loaded by `index.html`; Batch 2) |
+| `src/cutins.js` | Cut-in art lookups: face chains, fallback order, result art, art plan; the pop-up layer, file checks and Art check live in `src/ui.js` |
 | `tools/art-list.js` | Keeps CutIns paths, `art/cutins/` folder lists and `art/ART_LIST.csv` in step |
 | `data/*.csv` | Sample data = the sheet's tabs: Config, Styles, Cards, Statuses, Opponents, plus optional CutIns and Fighters |
 | `src/baked-data.js` | Built-in copy of the CSVs (`npm run bake`) |
@@ -197,7 +197,31 @@ Recommended plan, awaiting Owl's pick of where to start:
      found wins; animated GIF/WebP plays). Every other path stays exact
      `.png`; `--ext` never touches Victory. `pickSrc` also covers
      win_art/loss_art and Config defaults. 60 tests.
-   - *Batch 2 (next):* load `src/cutins.js` in `index.html` and
+   - *T.K.O. POV any-type (done 2026-10-09, Owl's ask):* Knockdown `pov_2`
+     (the opponent going down for good, seen by the winner) also ends in
+     `.*` (10 cells; `anyType()` in `src/cutins.js`). Other knockdown
+     pictures stay `.png`. 61 tests.
+   - *Batch 2 (built 2026-10-09, Owl tests it):* `index.html` and
+     `tools/build.js` load `src/cutins.js`; `ui.js` fills missing optional
+     tabs from the built-in copy at every compile (raw tables stay unfilled,
+     so updated built-in paths win over a stale cache); at fight start
+     `prepCutIns` checks every file both faces could show (HEAD on a hosted
+     copy, image load on file://; `.*` cells try types in order) and only
+     confirmed files are used; `preloadCutIns` downloads each deck card at
+     current fatigue plus the next knockdown, refreshed after knockdowns;
+     `runCutIns` shows card cut-ins (~1 s, a new card replaces the old),
+     knockdowns (1.7 s) and the T.K.O. (held until the result card, which
+     waits 3 s instead of 0.9 s); AI pause after a knockdown 2.3 s when
+     cut-ins are on; result screen uses `CB.resultArt` (win_art/loss_art →
+     Victory cut-in → Config default → generated). Sheet & saves gets a
+     Cut-in art panel: All / Big hits (Heavy, Finisher, Elite) / Off, which
+     CutIns source is in use, and Check art files (per-fighter found/total
+     and missing paths). Missing art = no pop-up (no generated card
+     cut-ins: 345 placeholders would be noise; the result screen keeps its
+     generated fallback). Not browser-tested by Claude at Owl's request.
+     Pre-existing, untouched: `render()` calls an undefined `renderBattle()`
+     if it ever runs mid-fight (nothing calls it there today).
+   - *Batch 2 original plan, for reference:* load `src/cutins.js` in `index.html` and
      `tools/build.js`; wire `fillOptionalTabs` into sheet sync, CSV load and
      cached data (defaults = `CB_BAKED_TABLES`); at fight start load
      `candidates` for the slots in play and record failures as `missing`
@@ -281,3 +305,6 @@ Recommended plan, awaiting Owl's pick of where to start:
 - **2026-10-09:** GitHub update steps given. Owl chose: Victory (win and
   defeat) cut-ins accept any image type; all other cut-ins stay PNG. Victory
   paths switched to `.*` (42 cells), folder lists and README updated.
+  Then the T.K.O. POV picture (Knockdown pov_2) got the same rule (10 cells).
+  Owl uploaded all the art and saw no pop-ups (expected: Batch 2 wasn't built
+  yet). Batch 2 built and delivered for Owl to test on GitHub Pages.

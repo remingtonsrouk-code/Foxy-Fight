@@ -61,8 +61,9 @@ and Claude will leave that row's text alone.
 ## Cut-in art
 
 A picture pops up when a card is played, on a knockdown and on the result
-screen. *(The paths, folders and lookups are in place; the fight screen starts
-showing them in the next update.)*
+screen. **Sheet & saves → Cut-in art** sets how often (every card, big hits
+only, or off) and has a **Check art files** button that lists, per fighter,
+any picture the game can't find, with its exact expected path.
 
 **Adding art takes no editing.** Every picture already has its path in the
 CutIns tab, and `art/cutins/` has a folder per fighter (`cherry-bomb/`,
@@ -83,10 +84,11 @@ need the CutIns or Fighters tab; without them the game uses its built-in copy.
   battered). Knockdown: first, second, T.K.O. Victory: the knockdowns the
   winner took.
 - **Format:** PNG, 16:9, 1280 × 720, lowercase names exactly as listed (GitHub
-  Pages is case-sensitive). The exception is Victory (the win and defeat
-  screens): those paths end in `.*`, so any image type works (`.png`, `.jpg`,
+  Pages is case-sensitive). The exceptions are Victory (the win and defeat
+  screens) and the T.K.O. picture in POV (`knockdown_pov_2`): those paths end
+  in `.*`, so any image type works (`.png`, `.jpg`,
   `.webp`, `.gif`, `.avif`, `.svg`; an animated GIF or WebP plays). Keep the
-  name and pick the ending, e.g. `victory_pov_0.gif`. `npm run art-list -- --ext webp`
+  name and pick the ending, e.g. `victory_pov_0.gif` or `knockdown_pov_2.gif`. `npm run art-list -- --ext webp`
   switches the other paths to another format.
 - **Art problems are warnings, never errors.** A typo won't stop the sheet
   loading; that picture just falls back.
@@ -155,7 +157,7 @@ numbers for the shipped data.
 | `src/engine.js` | Rules engine (pure functions, shared by game, AI and simulator) |
 | `src/ai.js` | Opponent AI: searches play orders on a copy of the match |
 | `src/progression.js` | Characters, XP, shop, upgrades, deck building, evolution, save codes |
-| `src/cutins.js` | Cut-in art lookups: face chains, fallback order, result-screen art, the art plan |
+| `src/cutins.js` | Cut-in art lookups: face chains, fallback order, result-screen art, the art plan (the pop-up itself is in `src/ui.js`) |
 | `src/net.js`, `src/vendor/peerjs.min.js` | Versus connection (PeerJS, MIT licence) |
 | `src/ui.js`, `src/styles.css`, `src/art.js` | Interface, cabaret theme, generated art-deco placeholder art |
 | `src/baked-data.js` | Built-in copy of `data/*.csv` (regenerate with `npm run bake`) |

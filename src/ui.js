@@ -20,13 +20,18 @@
     save: null, view: 'select', battle: null, shopFilter: 'all', settingsReport: null, sheetInput: store.get(KEYS.sheet) || '',
   };
 
+  /* A sheet without the optional CutIns / Fighters tabs uses the built-in copy,
+   * so the art paths shipped with the game work with any sheet. The raw tables
+   * are kept unfilled, so a later game update's paths are picked up too. */
+  const withBuiltInTabs = tables => CB.fillOptionalTabs(tables, window.CB_BAKED_TABLES);
+
   function loadData() {
     const baked = window.CB_BAKED_TABLES;
     const cachedRaw = store.get(KEYS.data);
     if (cachedRaw) {
       try {
         const cached = JSON.parse(cachedRaw);
-        const r = CB.compileData(cached.tables, { source: cached.source });
+        const r = CB.compileData(withBuiltInTabs(cached.tables), { source: cached.source });
         if (!r.errors.length) {
           app.data = r.data; app.rawTables = cached.tables;
           app.dataInfo = { source: cached.source, errors: [], warnings: r.warnings, at: cached.at };
@@ -334,7 +339,7 @@
           ${!rep && info.warnings.length ? reportHTML({ errors: [], warnings: info.warnings }) : ''}
           <details><summary style="cursor:pointer;font-weight:700">Setting up your sheet</summary>
             <ol class="steps" style="margin-top:10px">
-              <li>Import the template workbook into Google Sheets (File › Import › Upload). Keep the tab names: ${CB.TABS.map(t => `<code>${t}</code>`).join(', ')}.</li>
+              <li>Import the template workbook into Google Sheets (File › Import › Upload). Keep the tab names: ${CB.REQUIRED_TABS.map(t => `<code>${t}</code>`).join(', ')}. ${CB.OPTIONAL_TABS.map(t => `<code>${t}</code>`).join(' and ')} are optional; without them the game uses its built-in copy.</li>
               <li>Share › General access › <b>Anyone with the link</b> › Viewer.</li>
               <li>Paste the sheet's link above and press <b>Sync from sheet</b>. Errors are listed here and nothing changes until the data is valid.</li>
               <li>Pages hosted inside Claude can't reach Google. Use the downloaded game folder (open <code>index.html</code>) or host it on GitHub Pages or itch.io for live syncing. Here, export each tab as CSV and use <b>Load CSV files</b>.</li>
@@ -348,6 +353,7 @@
             <button class="btn danger small" data-act="reset-save">${app.confirmReset ? 'Press again to erase all progress' : 'Erase progress'}</button></div>
           ${ch ? '' : '<p class="muted" style="font-size:.85rem">No fighter chosen yet.</p>'}
         </div>
+        ${cutinPanel()}
       </div>
       <div class="panel stack ref">
         <h2>Sheet reference</h2>
@@ -356,6 +362,69 @@
         <table><thead><tr><th>Status id</th><th>Name</th><th>Rule</th></tr></thead><tbody>${stRows}</tbody></table>
       </div>
     </section>`;
+  }
+
+  /* Cut-in settings and the art check (Sheet & saves). */
+  function cutinPanel() {
+    const mode = cutinMode();
+    const opt = (k, l, note) => `<label class="radio"><input type="radio" name="cutin-mode" value="${k}" ${mode === k ? 'checked' : ''}> <span><b>${l}</b> · ${note}</span></label>`;
+    const own = app.rawTables && app.rawTables.CutIns && window.CB_BAKED_TABLES && app.rawTables.CutIns !== window.CB_BAKED_TABLES.CutIns;
+    return `<div class="panel stack">
+      <h2>Cut-in art</h2>
+      <fieldset class="field" style="border:0;padding:0;margin:0"><legend style="font-weight:700;font-size:.85rem;margin-bottom:6px">Show cut-ins</legend>
+        ${opt('all', 'Every card', 'plus knockdowns')}
+        ${opt('big', 'Big hits', 'Heavy, Finisher and Elite cards, plus knockdowns')}
+        ${opt('off', 'Off', 'the result screen still shows its picture')}
+      </fieldset>
+      <p class="muted" style="font-size:.85rem">Paths come from ${own ? 'your sheet\'s own <b>CutIns</b> tab' : 'the game\'s built-in CutIns list'}. Pictures not uploaded yet are skipped and the nearest one is used.</p>
+      <div class="row"><button class="btn soft" data-act="art-check">Check art files</button></div>
+      <div id="art-report">${artReportHTML()}</div>
+    </div>`;
+  }
+
+  function artReportHTML() {
+    const r = app.artReport;
+    if (!r) return '';
+    const rows = r.faces.map(f => `<details class="art-face"><summary><b>${esc(f.name)}</b> <span class="num ${f.found === f.total ? 'ok-line' : 'muted'}">${f.found} of ${f.total}</span></summary>
+      ${f.missing.length ? `<ul class="art-missing">${f.missing.map(m => `<li><code>${esc(m)}</code></li>`).join('')}</ul>` : '<p class="ok-line">All pictures found.</p>'}</details>`).join('');
+    return `<p class="${r.done && r.found === r.total ? 'ok-line' : ''}" style="font-size:.88rem">${r.done ? '' : 'Checking… '}${r.found} of ${r.total} pictures found${r.done ? '.' : ` (${r.checked} checked)`}</p>${rows}`;
+  }
+
+  async function runArtCheck() {
+    const d = app.data;
+    const plan = CB.artPlan(d);
+    const jobs = [];
+    const report = app.artReport = { faces: [], total: 0, found: 0, checked: 0, done: false };
+    plan.forEach(face => {
+      const f = { name: face.name, total: 0, found: 0, missing: [] };
+      report.faces.push(f);
+      const rows = (d.cutins || {})[face.fighter] || {};
+      face.rows.forEach(row => {
+        const key = row.kind === 'card' ? 'card:' + row.move : row.kind === 'tag' ? 'tag:' + row.tag : row.kind;
+        face.views.forEach(view => {
+          for (let s = 0; s < CB.CUTIN_SLOT_COUNT; s++) {
+            const cell = rows[key] ? rows[key][view][s] : '';
+            f.total++; report.total++;
+            jobs.push({ f, cell: cell || '', label: cell || `(no path: ${face.fighter} ${row.move} ${view}_${s})` });
+          }
+        });
+      });
+    });
+    const paint = () => { const el = document.getElementById('art-report'); if (el) el.innerHTML = artReportHTML(); };
+    paint();
+    let next = 0;
+    const worker = async () => {
+      while (next < jobs.length) {
+        const j = jobs[next++];
+        const hit = j.cell ? await probeCell(j.cell, true) : '';
+        report.checked++;
+        if (hit) { j.f.found++; report.found++; } else j.f.missing.push(j.label);
+        if (report.checked % 20 === 0) paint();
+      }
+    };
+    await Promise.all(Array.from({ length: 6 }, worker));
+    report.done = true;
+    paint();
   }
 
   /* ---------- render ---------- */
@@ -394,6 +463,9 @@
     const b = app.battle;
     app.view = 'battle';
     root.innerHTML = topbar() + `<main id="battle-root"></main>`;
+    hideCutIn();
+    b.tkoCutIn = false;
+    prepCutIns(b);
     buildBattle();
     afterAction();
   }
@@ -464,12 +536,161 @@
     clearTimeout(flash.t); flash.t = setTimeout(() => { el.hidden = true; }, 1900);
   }
 
+  /* ---------- cut-in art ----------
+   * Paths come from the CutIns tab (src/cutins.js picks which one). Before a
+   * fight, the game checks which of those files exist (a quick HEAD request on
+   * a hosted copy, an image load otherwise) and only ever shows confirmed ones,
+   * so a half-filled art folder just falls back. Face rule: your fighter in
+   * profile, the opponent in POV. Cards show the attacker, knockdowns the one
+   * going down, the result screen the winner. */
+  const CUTIN_MODES = ['all', 'big', 'off'];
+  function cutinMode() { const m = store.get('foxyfight.cutins'); return CUTIN_MODES.includes(m) ? m : 'all'; }
+  const artStatus = new Map();   // file -> 'ok' | 'missing'
+  const artWaiting = new Map();  // file -> Promise<boolean>
+
+  function probeArt(src, fresh) {
+    if (!fresh && artStatus.has(src)) return Promise.resolve(artStatus.get(src) === 'ok');
+    if (!fresh && artWaiting.has(src)) return artWaiting.get(src);
+    const url = CB.artSrc(String(src));
+    const viaImage = () => new Promise(res => {
+      const im = new Image();
+      im.onload = () => res(true); im.onerror = () => res(false);
+      im.src = url;
+    });
+    const hosted = /^https?:$/.test(location.protocol) && !/^https?:/i.test(src);
+    const p = (hosted
+      ? fetch(url, { method: 'HEAD', cache: fresh ? 'no-cache' : 'default' })
+        .then(r => (r.ok ? true : (r.status === 404 || r.status === 410) ? false : viaImage()), viaImage)
+      : viaImage())
+      .then(ok => { artStatus.set(src, ok ? 'ok' : 'missing'); artWaiting.delete(src); return ok; });
+    artWaiting.set(src, p);
+    return p;
+  }
+  /* One CutIns cell. A ".*" cell tries each image type in order and stops at the first that exists. */
+  async function probeCell(cell, fresh) {
+    for (const c of CB.expandSrc(cell)) if (await probeArt(c, fresh)) return c;
+    return '';
+  }
+
+  function cutinFaces(b) {
+    const d = app.data;
+    return {
+      mine: CB.faceChain(d, { styleId: F(b, 0).styleId }),
+      theirs: b.pvp ? CB.faceChain(d, { styleId: F(b, 1).styleId }) : CB.faceChain(d, { opponentId: b.opp.id }),
+    };
+  }
+
+  /* Called when the fight screen opens: check every file this fight could show. */
+  function prepCutIns(b) {
+    const d = app.data;
+    const faces = cutinFaces(b);
+    const cells = [...CB.candidates(d, faces.mine, 'profile'), ...CB.candidates(d, faces.theirs, 'pov')];
+    const tracked = new Set();
+    cells.forEach(c => CB.expandSrc(c).forEach(x => tracked.add(x)));
+    const deckIds = v => { const f = F(b, v); return [...new Set([...f.deck, ...f.hand, ...f.discard].map(c => c.id))]; };
+    b.cut = {
+      mine: faces.mine, theirs: faces.theirs, tracked, ready: false, timers: [], preloaded: new Set(), keep: [],
+      decks: [deckIds(0), deckIds(1)],
+      // a file this fight could use counts as missing until it is confirmed
+      missing: src => artStatus.get(src) === 'missing' || (tracked.has(src) && artStatus.get(src) !== 'ok'),
+    };
+    Promise.all(cells.map(c => probeCell(c))).then(() => {
+      if (app.battle !== b) return;
+      b.cut.ready = true;
+      preloadCutIns(b);
+    });
+  }
+
+  function cutinHit(b, side, q) {
+    const c = b.cut;
+    if (!c) return null;
+    return CB.resolveCutIn(app.data, side === 0 ? c.mine : c.theirs, Object.assign({ view: side === 0 ? 'profile' : 'pov' }, q), c.missing);
+  }
+
+  /* Download the pictures the next turns are most likely to need: every card in
+   * both decks at each fighter's current fatigue, and her next knockdown. */
+  function preloadCutIns(b) {
+    const c = b.cut;
+    if (!c || !c.ready) return;
+    const tko = app.data.config.knockdowns_for_tko;
+    [0, 1].forEach(v => {
+      const f = F(b, v);
+      const hits = c.decks[v].map(id => cutinHit(b, v, { kind: 'move', cardId: id, slot: f.knockdowns }));
+      const next = f.knockdowns + 1;
+      hits.push(cutinHit(b, v, { kind: 'knockdown', slot: CB.knockdownSlot(next, tko > 1 && next >= tko) }));
+      hits.forEach(h => {
+        if (!h || c.preloaded.has(h.src)) return;
+        c.preloaded.add(h.src);
+        const im = new Image(); im.src = CB.artSrc(h.src); c.keep.push(im);
+      });
+    });
+  }
+
+  function cutinEl() {
+    let el = document.getElementById('cutin');
+    if (!el) {
+      el = document.createElement('div');
+      el.id = 'cutin'; el.className = 'cutin'; el.hidden = true; el.setAttribute('aria-hidden', 'true');
+      el.innerHTML = '<div class="cutin-frame"><img alt=""></div><div class="cutin-cap"></div>';
+      document.body.appendChild(el);
+    }
+    return el;
+  }
+  function hideCutIn() {
+    const b = app.battle;
+    if (b && b.cut) { b.cut.timers.forEach(clearTimeout); b.cut.timers = []; }
+    const el = document.getElementById('cutin');
+    if (el) { el.hidden = true; el.classList.remove('go'); }
+  }
+  function showCutIn(item) {
+    const el = cutinEl();
+    const img = el.querySelector('img');
+    el.className = `cutin ${item.side === 0 ? 'mine' : 'theirs'} kind-${item.kind}`;
+    img.src = CB.artSrc(item.src);
+    el.querySelector('.cutin-cap').textContent = item.caption || '';
+    el.hidden = false;
+    void el.offsetWidth; el.classList.add('go');
+  }
+
+  /* Plays the cut-ins one drain of engine events produced (a card, maybe a
+   * knockdown after it). A new card replaces whatever is showing. */
+  function runCutIns(b, reqs) {
+    const c = b.cut;
+    const mode = cutinMode();
+    if (!c || !reqs.length) return;
+    let knocked = false;
+    const items = [];
+    reqs.forEach(r => {
+      if (r.kind !== 'move') knocked = true;
+      if (mode === 'off') return;
+      if (r.kind === 'move' && mode === 'big') {
+        const card = app.data.cards[r.cardId];
+        if (!card || !(card.tier === 'Elite' || card.tagKeys.includes('heavy') || card.tagKeys.includes('finisher'))) return;
+      }
+      const hit = cutinHit(b, r.side, r.kind === 'move' ? { kind: 'move', cardId: r.cardId, slot: r.slot } : { kind: 'knockdown', slot: r.slot });
+      if (hit) items.push(Object.assign({ src: hit.src }, r));
+    });
+    if (knocked) preloadCutIns(b);
+    if (!items.length) return;
+    c.timers.forEach(clearTimeout); c.timers = [];
+    let t = 0;
+    items.forEach((it, i) => {
+      const last = i === items.length - 1;
+      const hold = it.kind === 'tko' ? 0 : it.kind === 'knockdown' ? 1700 : (last ? 950 : 650);
+      c.timers.push(setTimeout(() => { if (app.battle === b) showCutIn(it); }, t));
+      if (it.kind === 'tko') { b.tkoCutIn = true; return; }   // stays up until the result screen
+      t += hold;
+      if (last) c.timers.push(setTimeout(() => { const el = document.getElementById('cutin'); if (el && app.battle === b) { el.hidden = true; el.classList.remove('go'); } }, t));
+    });
+  }
+
   function drain() {
     const b = app.battle, s = b.state, d = app.data;
     const evs = s.events.splice(0);
     const them = F(b, 1).name;
     const nm = v => v === 0 ? 'You' : them;
     const verb = (v, you, she) => v === 0 ? you : she;
+    const cutReqs = [];
     for (const raw of evs) {
       // translate engine indices to screen indices (0 = you)
       const e = { ...raw };
@@ -487,6 +708,7 @@
         case 'play': {
           const c = d.cards[e.cardId];
           b.played.push({ card: c, linked: e.linked, chain: e.chain, who: e.who });
+          cutReqs.push({ kind: 'move', side: e.who, cardId: e.cardId, slot: e.kd || 0, caption: c.name });
           logLine(`${nm(e.who)} ${verb(e.who, 'play', 'plays')} ${c.name}${e.linked ? ` (link, chain ${e.chain}${e.comboBonus ? `, +${e.comboBonus} combo` : ''})` : ''}`);
           const cc = document.getElementById('combo-count');
           if (cc) { cc.classList.remove('pop'); void cc.offsetWidth; if (e.linked && e.chain > 1) cc.classList.add('pop'); }
@@ -514,6 +736,7 @@
           const subj = e.who === 0 ? "You're" : them + ' is';
           const msg = e.final ? `${subj} down for good` : `Knockdown! ${subj} down (${e.count} of ${tko})`;
           flash(e.final ? 'T.K.O.' : 'Knockdown!', msg);
+          cutReqs.push({ kind: e.final ? 'tko' : 'knockdown', side: e.who, slot: CB.knockdownSlot(e.count, e.final), caption: e.final ? 'T.K.O.' : 'Knockdown!' });
           floater(e.who, 'DOWN', '');
           logLine(`  ${msg}${e.final ? '' : `, back up with ${e.hp} HP`}`);
           b.justKnocked = true;
@@ -535,6 +758,7 @@
         case 'end': break;
       }
     }
+    runCutIns(b, cutReqs);
   }
 
   function updateBattle() {
@@ -664,7 +888,8 @@
     if (b.pvp || b.busy || b.pendingCorner || s.over || s.active !== 1) return;
     b.busy = true; updateBattle();
     const profile = { aggression: b.opp.aggression, caution: b.opp.caution };
-    await sleep(b.justKnocked ? 1500 : 650);
+    const kdPause = cutinMode() === 'off' ? 1500 : 2300;   // room for the knockdown cut-in
+    await sleep(b.justKnocked ? kdPause : 650);
     b.justKnocked = false;
     const turn = s.turnCount;
     let guard = 0;
@@ -673,7 +898,7 @@
       if (i < 0) break;
       CB.playCard(s, d, i);
       drain(); updateBattle();
-      await sleep(b.justKnocked ? 1400 : 720);
+      await sleep(b.justKnocked ? kdPause : 720);
     }
     if (app.battle !== b) return;
     // a knockdown already ended the turn inside the engine
@@ -743,8 +968,11 @@
   }
 
   function showResult(b, won, middle, buttons) {
+    // after a T.K.O. cut-in, give it time on screen before the result card covers it
+    const delay = b.tkoCutIn ? 3000 : 900;
     setTimeout(() => {
       if (app.battle !== b) return;
+      hideCutIn();
       document.querySelectorAll('.overlay').forEach(o => o.remove());
       const ov = document.createElement('div');
       ov.className = 'overlay';
@@ -758,7 +986,7 @@
       </div>`;
       document.body.appendChild(ov);
       ov.querySelector('.btn').focus();
-    }, 900);
+    }, delay);
   }
 
   function resultReason(s) {
@@ -769,13 +997,17 @@
     return { ko: 'K.O.', tko: 'T.K.O.', time: 'Time up', forfeit: 'Forfeit', concede: 'Conceded' }[s.endReason] || 'Fight over';
   }
 
-  /* End-of-fight image. Opponents tab: win_art (you won) and loss_art (she won).
-   * Config: default_win_art / default_loss_art fill any blanks. With no image,
-   * or if it fails to load, a generated spotlight of the winner's medallion shows. */
+  /* End-of-fight image, in this order: the Opponents tab's win_art (you won) /
+   * loss_art (she won); then the winner's Victory cut-in (yours in profile when
+   * you win, hers in POV when she wins), picked by the knockdowns she took;
+   * then Config default_win_art / default_loss_art. With no image, or if it
+   * fails to load, a generated spotlight of the winner's medallion shows. */
   function resultArt(b, won) {
     const d = app.data;
-    const src = won ? (b.opp.winArt || d.config.default_win_art) : (b.opp.lossArt || d.config.default_loss_art);
     const winner = F(b, won ? 0 : 1);
+    const cut = b.cut || Object.assign(cutinFaces(b), { missing: null });
+    const pick = CB.resultArt(d, { won, opponent: b.opp, myFaces: cut.mine, theirFaces: cut.theirs, winnerKd: winner.knockdowns, missing: cut.missing });
+    const src = pick ? pick.src : '';
     const wStyle = d.styles[winner.styleId];
     const id = won ? winner.styleId : b.opp.id;
     const name = won ? wStyle.name : b.opp.name;
@@ -788,6 +1020,7 @@
   function closeBattle(to) {
     const b = app.battle;
     const opp = b && b.opp;
+    hideCutIn();
     document.querySelectorAll('.overlay').forEach(o => o.remove());
     if (b && b.pvp) { vsLeave(); }
     app.battle = null;
@@ -986,7 +1219,7 @@
     document.querySelectorAll('.overlay').forEach(o => o.remove());
     // the match runs on the host's data; keep the player's own data to restore afterwards
     if (!vs.savedData) vs.savedData = app.data;
-    const r = CB.compileData(tables, { source: 'host sheet' });
+    const r = CB.compileData(withBuiltInTabs(tables), { source: 'host sheet' });
     app.data = r.data;
     const d = app.data;
     const state = CB.createMatch(d, start.specs[0], start.specs[1], { seed: start.seed, firstPlayer: start.first, rounds: start.rounds || 0 });
@@ -1207,7 +1440,7 @@
 
   /* ---------- settings actions ---------- */
   function applyTables(tables, source) {
-    const r = CB.compileData(tables, { source });
+    const r = CB.compileData(withBuiltInTabs(tables), { source });
     if (r.errors.length) {
       app.settingsReport = { errors: r.errors, warnings: r.warnings, ok: '' };
       render(); toast('The sheet has errors. Nothing was changed.');
@@ -1319,6 +1552,11 @@
         vs.status = 'waiting'; render(); break;
       }
       case 'sync': syncSheet(); break;
+      case 'art-check':
+        if (app.artReport && !app.artReport.done) return;
+        t.disabled = true;
+        runArtCheck().then(() => { t.disabled = false; });
+        break;
       case 'reset-data':
         store.del(KEYS.data);
         applyTables({ ...window.CB_BAKED_TABLES }, 'Built-in sample data');
@@ -1369,6 +1607,7 @@
     if (e.target.id === 'vs-name') store.set('foxyfight.name', e.target.value.slice(0, 40));
   });
   root.addEventListener('change', e => {
+    if (e.target.name === 'cutin-mode') { store.set('foxyfight.cutins', e.target.value); toast('Cut-in setting saved'); }
     if (e.target.name === 'vs-mode') {
       vs.mode = e.target.value;
       const wrap = document.getElementById('vs-fighter-wrap');
@@ -1394,3 +1633,4 @@
   render();
   window.ChainbloomApp = window.FoxyFightApp = app; // handy for debugging in the console
 })();
+

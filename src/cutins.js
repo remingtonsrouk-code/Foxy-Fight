@@ -97,9 +97,10 @@
   }
 
   /* A path ending in ".*" means "any image type": the game tries each of
-   * these in order and uses the first file that exists. Used for the Victory
-   * rows (the win and defeat screens), which show once a fight, so the extra
-   * tries cost nothing. Everything else names one exact file. */
+   * these in order and uses the first file that exists. Used where a big or
+   * animated picture makes sense and it shows once a fight, so the extra tries
+   * cost nothing: the Victory rows (win and defeat screens) and the T.K.O.
+   * picture in POV (Knockdown pov_2). Everything else names one exact file. */
   const ANY_EXT = ['png', 'jpg', 'jpeg', 'webp', 'gif', 'avif', 'svg', 'PNG', 'JPG', 'JPEG'];
   function expandSrc(src) {
     src = String(src || '').trim();
@@ -251,8 +252,11 @@
     });
     return plan;
   }
+  function anyType(row, view, slot) {
+    return row.kind === 'victory' || (row.kind === 'knockdown' && view === 'pov' && slot === SLOTS - 1);
+  }
   function artPath(data, face, row, view, slot, ext) {
-    const e = row.kind === 'victory' ? '*' : (ext || 'png');   // win/defeat screens: any image type
+    const e = anyType(row, view, slot) ? '*' : (ext || 'png');
     return `art/cutins/${face.folder}/${moveFileSlug(data, row)}_${view}_${slot}.${e}`;
   }
 
@@ -272,5 +276,5 @@
     return assignFolders(plan);
   }
 
-  return { CUTIN_SLOT_COUNT: SLOTS, styleChain, faceChain, moveKeys, slotOrder, knockdownSlot, resolveCutIn, resultArt, artFiles, candidates, artPlan, artPath, slug, expandSrc, pickSrc, ANY_EXT };
+  return { CUTIN_SLOT_COUNT: SLOTS, styleChain, faceChain, moveKeys, slotOrder, knockdownSlot, resolveCutIn, resultArt, artFiles, candidates, artPlan, artPath, anyType, slug, expandSrc, pickSrc, ANY_EXT };
 });

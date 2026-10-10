@@ -7,7 +7,7 @@ const read = f => fs.readFileSync(path.join(rootDir, f), 'utf8');
 const inline = f => `<script>/* ${f} */\n${read(f).replace(/<\/script/gi, '<\\/script')}\n</script>`;
 // The Claude-hosted copy can't make outside connections, so it leaves PeerJS out
 // and the Versus screen explains where online play works.
-const core = ['src/data.js', 'src/engine.js', 'src/ai.js', 'src/progression.js', 'src/art.js'];
+const core = ['src/data.js', 'src/engine.js', 'src/ai.js', 'src/progression.js', 'src/cutins.js', 'src/art.js'];
 const tail = ['src/baked-data.js', 'src/ui.js'];
 const scripts = [...core, 'src/net.js', ...tail].map(inline).join('\n');
 const scriptsWithNet = [...core, 'src/vendor/peerjs.min.js', 'src/net.js', ...tail].map(inline).join('\n');
