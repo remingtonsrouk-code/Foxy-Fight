@@ -450,20 +450,25 @@ ol.steps { margin: 0; padding-left: 20px; display: grid; gap: 6px; font-size: .8
 
 
 /* ---------- cut-ins ----------
-   A 16:9 picture that pops over the middle of the fight for about a second.
+   A picture that pops over the middle of the fight for about a second. The frame
+   takes the picture's own shape (wide, square or tall), so nothing is cropped:
+   up to 600px wide and 62% of the screen high, whichever limit it meets first.
    Yours slides in from the left (profile); the opponent's punches toward you (POV).
    pointer-events: none, so it never blocks a click; overlays (z 50) sit above it. */
 .cutin {
   position: fixed; left: 50%; top: 46%; z-index: 40; pointer-events: none;
-  width: min(600px, calc(100vw - 32px)); transform: translate(-50%, -50%);
-  display: grid; gap: 0; filter: drop-shadow(0 18px 40px rgba(0, 0, 0, .6));
+  width: max-content; max-width: calc(100vw - 32px); transform: translate(-50%, -50%);
+  display: grid; justify-items: center; gap: 0; filter: drop-shadow(0 18px 40px rgba(0, 0, 0, .6));
 }
 .cutin[hidden] { display: none; }
 .cutin-frame {
-  position: relative; aspect-ratio: 16 / 9; border-radius: 12px; overflow: hidden; background: var(--bg);
-  box-shadow: inset 0 0 0 1px var(--gold), 0 0 0 4px var(--bg), 0 0 0 5px var(--frame);
+  position: relative; border-radius: 12px; overflow: hidden; background: var(--bg); line-height: 0;
+  border: 2px solid var(--gold); box-shadow: 0 0 0 4px var(--bg), 0 0 0 5px var(--frame);
 }
-.cutin-frame img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+.cutin-frame img {
+  display: block; width: auto; height: auto; object-fit: contain;
+  max-width: min(600px, calc(100vw - 36px)); max-height: 62vh; min-width: 120px; min-height: 120px;
+}
 .cutin-cap {
   justify-self: center; margin-top: -18px; position: relative; z-index: 1;
   font: 400 1.25rem/1 var(--font-display); color: var(--gold-2); letter-spacing: .06em;
@@ -473,10 +478,16 @@ ol.steps { margin: 0; padding-left: 20px; display: grid; gap: 6px; font-size: .8
 .cutin.mine.go { animation: cutin-side .32s cubic-bezier(.2, .9, .3, 1.15) both; }
 .cutin.theirs.go { animation: cutin-punch .3s cubic-bezier(.2, .9, .3, 1.2) both; }
 .cutin.kind-knockdown .cutin-cap, .cutin.kind-tko .cutin-cap { color: var(--danger); box-shadow: inset 0 0 0 1px var(--danger); font-size: 1.5rem; }
-.cutin.kind-tko .cutin-frame { box-shadow: inset 0 0 0 2px var(--danger), 0 0 0 4px var(--bg), 0 0 0 5px var(--danger); }
+.cutin.kind-tko .cutin-frame { border-color: var(--danger); box-shadow: 0 0 0 4px var(--bg), 0 0 0 5px var(--danger); }
 @keyframes cutin-side { from { opacity: 0; transform: translate(-90%, -50%) skewX(-6deg); } to { opacity: 1; transform: translate(-50%, -50%); } }
 @keyframes cutin-punch { from { opacity: 0; transform: translate(-50%, -50%) scale(.55); } 70% { opacity: 1; transform: translate(-50%, -50%) scale(1.04); } to { opacity: 1; transform: translate(-50%, -50%) scale(1); } }
-@media (max-width: 640px) { .cutin-cap { font-size: 1rem; margin-top: -14px; } }
+@media (max-width: 640px) { .cutin-cap { font-size: 1rem; margin-top: -14px; } .cutin-frame img { max-height: 52vh; } }
+
+/* Result screen: a real picture shows whole, in its own shape; the generated
+   16:9 spotlight only shows when there is no picture (or it fails to load). */
+.result-art:has(> img) { aspect-ratio: auto; display: grid; place-items: center; background: var(--bg); min-height: 160px; }
+.result-art:has(> img) > svg { display: none; }
+.result-art > img:only-of-type { position: static; inset: auto; width: auto; height: auto; max-width: 100%; max-height: 52vh; object-fit: contain; }
 
 /* art check (Sheet & saves) */
 .art-face { border-top: 1px solid var(--line); padding: 7px 0; font-size: .88rem; }

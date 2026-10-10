@@ -270,7 +270,8 @@ Recommended plan, awaiting Owl's pick of where to start:
      Monolith (Elite Guard) gets its own art; names `CutIns`, `Fighters`,
      `outfit_of`, `Knockdown`, `Victory` approved.
    - *File naming:* `art/cutins/<fighter folder>/<tag or card name>_<view>_<n>.png`,
-     16:9 (1280×720), lowercase. Victory files: any image type
+     any shape (shown whole, frame fits the picture; ~1200–1300 px long
+     side), lowercase. Victory files: any image type
      (`victory_<view>_<n>.<any>`). Paths are pre-filled; Owl only drops files in.
    - *Boundary note:* fatigue reads through sweat, hair, smudged makeup,
      swelling, tape and posture, not clothing damage (no undressing as
@@ -308,3 +309,7 @@ Recommended plan, awaiting Owl's pick of where to start:
   Then the T.K.O. POV picture (Knockdown pov_2) got the same rule (10 cells).
   Owl uploaded all the art and saw no pop-ups (expected: Batch 2 wasn't built
   yet). Batch 2 built and delivered for Owl to test on GitHub Pages.
+  Owl's art isn't 16:9 and the pop-ups cropped it badly, so the cut-in frame
+  now takes each picture's own shape (max 600 px wide / 62% of screen high,
+  52% on phones) and the result screen shows the whole picture too (the
+  generated spotlight only shows when there's no picture). CSS only.

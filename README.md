@@ -83,7 +83,9 @@ need the CutIns or Fighters tab; without them the game uses its built-in copy.
 - **`_0 _1 _2`:** on moves, the knockdowns that fighter has taken (fresh, worn,
   battered). Knockdown: first, second, T.K.O. Victory: the knockdowns the
   winner took.
-- **Format:** PNG, 16:9, 1280 × 720, lowercase names exactly as listed (GitHub
+- **Format:** PNG in any shape (wide, square or tall): pop-ups and the result
+  screen show the whole picture in its own shape, never cropped. About
+  1200–1300 px on the long side is plenty. Lowercase names exactly as listed (GitHub
   Pages is case-sensitive). The exceptions are Victory (the win and defeat
   screens) and the T.K.O. picture in POV (`knockdown_pov_2`): those paths end
   in `.*`, so any image type works (`.png`, `.jpg`,
