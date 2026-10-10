@@ -104,7 +104,8 @@ function main() {
 
   // ---- 3 + 4: folders, lists ----
   const cellOf = (face, row, view, s) => String(raw[at[planKey(face, row)]][col(`${view}_${s}`)] || '').trim();
-  const exists = p => p && !/^https?:/.test(p) && fs.existsSync(path.join(ROOT, p));
+  // The file actually present for a path ('' if none). ".*" paths match any image type.
+  const found = p => (p && !/^https?:/.test(p) ? C.expandSrc(p).find(c => fs.existsSync(path.join(ROOT, c))) || '' : '');
   const listRows = [['done', 'face', 'type', 'folder', 'move', 'covers', 'view', 'slot', 'what_to_draw', 'file']];
   const summary = [];
   let total = 0, have = 0;
@@ -119,8 +120,10 @@ function main() {
       body.push('', `${row.kind === 'card' ? row.label.toUpperCase() + ' (' + row.move + ')' : String(row.move).toUpperCase()}${covers}`);
       face.views.forEach(view => {
         for (let s = 0; s < C.CUTIN_SLOT_COUNT; s++) {
-          const file = cellOf(face, row, view, s);
-          const ok = exists(file);
+          const cell = cellOf(face, row, view, s);
+          const hit = found(cell);
+          const ok = !!hit;
+          const file = hit || cell;
           const what = describe(face, row, view, s);
           const inFolder = file.startsWith(`art/cutins/${face.folder}/`) ? file.slice(`art/cutins/${face.folder}/`.length) : file;
           body.push(`  [${ok ? 'x' : ' '}] ${inFolder.padEnd(34)} ${what}`);
@@ -142,6 +145,8 @@ function main() {
       '_0 _1 _2 on a move = knockdowns she has taken: fresh / worn / battered.',
       'Knockdown _0 _1 _2  = first knockdown / second / T.K.O.',
       'Victory   _0 _1 _2  = she won after taking 0 / 1 / 2 knockdowns.',
+      `Everything is .${ext} except Victory: victory_*.* can be any image type`,
+      '(.png .jpg .webp .gif .avif .svg; an animated .gif or .webp plays).',
       'Missing pictures are fine: the game uses the nearest one it has.',
       ...body, '',
     ].join('\n'));
@@ -163,7 +168,11 @@ function main() {
     'Format',
     `  .${ext}, 16:9, 1280 x 720. Lowercase names, exactly as listed (GitHub Pages`,
     '  is case-sensitive). Smaller files load faster: aim for under 500 KB each.',
-    '  To switch every listed path to another format: npm run art-list -- --ext webp',
+    '  Exception: Victory pictures (the win and defeat screens) can be any image',
+    '  type. Keep the name and pick the ending: victory_pov_0.gif, victory_profile_1.jpg.',
+    '  .png .jpg .jpeg .webp .gif .avif .svg all work; an animated .gif or .webp plays.',
+    '  (iPhone .heic photos do not show in most browsers; export as .jpg.)',
+    '  To switch the other paths to another format: npm run art-list -- --ext webp',
     '',
     'Who is who',
     '  Your fighter is always shown in profile; the opponent always in POV, coming',
@@ -183,7 +192,7 @@ function main() {
   fs.writeFileSync(path.join(ART, 'ART_LIST.csv'), toCsv(listRows));
   console.log(summary.join('\n'));
   console.log(`\n${have} of ${total} pictures in place.`);
-  console.log(`CutIns: ${added} rows added, ${filled} paths filled${repathed ? `, ${repathed} switched to .${ext}` : ''}${skippedMine ? `, ${skippedMine} rows marked mine left alone` : ''}.`);
+  console.log(`CutIns: ${added} rows added, ${filled} paths filled${repathed ? `, ${repathed} paths updated to the current format` : ''}${skippedMine ? `, ${skippedMine} rows marked mine left alone` : ''}.`);
 }
 
 main();

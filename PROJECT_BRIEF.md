@@ -2,7 +2,7 @@
 
 Read this first. It is the hand-off from the original build conversation and is
 the source of truth for decisions, voice, rules of collaboration and what's next.
-Owner: Owl. Last updated: 2026-10-08.
+Owner: Owl. Last updated: 2026-10-09.
 
 ## 1. What the game is
 
@@ -37,7 +37,7 @@ text, decks, art, ladder, rules settings.
   hosted inside Claude.
 - **Look:** cabaret/speakeasy — gold and cream on oxblood black, art-deco frames,
   Limelight (display) + Josefin Sans (body). Single dark theme by design.
-- **Quality:** 58 rules tests pass (`npm test`); AI-vs-AI simulator
+- **Quality:** 60 rules tests pass (`npm test`); AI-vs-AI simulator
   (`npm run sim`); browser playthroughs of ladder, rounds and two-browser Versus.
 
 Owl has cleared the ladder as Cherry Bomb, evolved to Main Event, and tested
@@ -191,10 +191,18 @@ Recommended plan, awaiting Owl's pick of where to start:
      blank paths, rewrites folder lists and `art/ART_LIST.csv`; never changes
      a filled cell or a `mine` row. Template: Art List tab dropped (folder
      lists replace it). 58 tests. Sim identical to the shipped report.
+   - *Victory any-type (done 2026-10-09, Owl's ask):* Victory paths (win and
+     defeat screens) end in `.*` and accept any image type (`expandSrc`:
+     png, jpg, jpeg, webp, gif, avif, svg, then uppercase PNG/JPG/JPEG; first
+     found wins; animated GIF/WebP plays). Every other path stays exact
+     `.png`; `--ext` never touches Victory. `pickSrc` also covers
+     win_art/loss_art and Config defaults. 60 tests.
    - *Batch 2 (next):* load `src/cutins.js` in `index.html` and
      `tools/build.js`; wire `fillOptionalTabs` into sheet sync, CSV load and
      cached data (defaults = `CB_BAKED_TABLES`); at fight start load
-     `candidates` for the slots in play and record failures as `missing`;
+     `candidates` for the slots in play and record failures as `missing`
+     (for `.*` cells, try `expandSrc` in order and stop at the first that
+     loads; probe Victory lazily or in the background);
      cut-in layer in `ui.js` driven by `drain()` events (`play` with `kd`,
      `knockdown`, result screen via `resultArt`); settings toggle;
      generated placeholder; longer pause after a T.K.O.; an "Art check" list
@@ -238,7 +246,8 @@ Recommended plan, awaiting Owl's pick of where to start:
      Monolith (Elite Guard) gets its own art; names `CutIns`, `Fighters`,
      `outfit_of`, `Knockdown`, `Victory` approved.
    - *File naming:* `art/cutins/<fighter folder>/<tag or card name>_<view>_<n>.png`,
-     16:9 (1280×720), lowercase. Paths are pre-filled; Owl only drops files in.
+     16:9 (1280×720), lowercase. Victory files: any image type
+     (`victory_<view>_<n>.<any>`). Paths are pre-filled; Owl only drops files in.
    - *Boundary note:* fatigue reads through sweat, hair, smudged makeup,
      swelling, tape and posture, not clothing damage (no undressing as
      mechanic).
@@ -269,3 +278,6 @@ Recommended plan, awaiting Owl's pick of where to start:
   built the per-fighter art folders with file lists, made missing files fall
   back like blanks, and let sheets without the new tabs use the built-in copy.
   Owl now only drops files into `art/cutins/` and uploads.
+- **2026-10-09:** GitHub update steps given. Owl chose: Victory (win and
+  defeat) cut-ins accept any image type; all other cut-ins stay PNG. Victory
+  paths switched to `.*` (42 cells), folder lists and README updated.

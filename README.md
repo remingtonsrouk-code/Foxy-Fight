@@ -83,8 +83,11 @@ need the CutIns or Fighters tab; without them the game uses its built-in copy.
   battered). Knockdown: first, second, T.K.O. Victory: the knockdowns the
   winner took.
 - **Format:** PNG, 16:9, 1280 × 720, lowercase names exactly as listed (GitHub
-  Pages is case-sensitive). `npm run art-list -- --ext webp` switches the
-  listed paths to another format.
+  Pages is case-sensitive). The exception is Victory (the win and defeat
+  screens): those paths end in `.*`, so any image type works (`.png`, `.jpg`,
+  `.webp`, `.gif`, `.avif`, `.svg`; an animated GIF or WebP plays). Keep the
+  name and pick the ending, e.g. `victory_pov_0.gif`. `npm run art-list -- --ext webp`
+  switches the other paths to another format.
 - **Art problems are warnings, never errors.** A typo won't stop the sheet
   loading; that picture just falls back.
 

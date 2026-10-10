@@ -531,6 +531,24 @@ test('a path whose file is missing counts as blank, so the lookup keeps falling 
   assert.strictEqual(q(0, src => src.startsWith('m')), 'l0.png', 'a function works too');
   assert.deepStrictEqual(C.candidates(data, faces, 'profile'), ['m0.png', 'm1.png', 'm2.png', 'l0.png', 'l1.png', 'l2.png']);
 });
+test('a ".*" path accepts any image type, first found wins; other paths stay exact', () => {
+  assert.deepStrictEqual(C.expandSrc('a/v_0.*').slice(0, 4), ['a/v_0.png', 'a/v_0.jpg', 'a/v_0.jpeg', 'a/v_0.webp']);
+  assert.deepStrictEqual(C.expandSrc('a/l_0.png'), ['a/l_0.png']);
+  const { data } = art(['t,Victory,win.*,,,,,,mine']);
+  const notThere = new Set(C.expandSrc('win.*').filter(s => s !== 'win.gif'));
+  const r = C.resultArt(data, { won: true, opponent: data.opponents[0], myFaces: ['t'], winnerKd: 0, missing: notThere });
+  assert.strictEqual(r.src, 'win.gif');
+  const none = C.resultArt(data, { won: true, opponent: data.opponents[0], myFaces: ['t'], winnerKd: 0, missing: new Set(C.expandSrc('win.*')) });
+  assert.strictEqual(none, null, 'no file of any type: falls through');
+});
+test('shipped Victory paths accept any type; every other shipped path is .png', () => {
+  const d = loadLocal().data;
+  Object.entries(d.cutins).forEach(([f, rows]) => Object.entries(rows).forEach(([k, row]) => ['profile', 'pov'].forEach(v => row[v].forEach(p => {
+    if (!p) return;
+    if (k === 'victory') assert(p.endsWith('.*'), `${f} victory ${p}`);
+    else assert(p.endsWith('.png'), `${f} ${k} ${p}`);
+  }))));
+});
 test('result art skips a missing win_art file too', () => {
   const { data } = art(['t2,Victory,me_win.png,,,,,,mine']);
   const r = C.resultArt(data, { won: true, opponent: data.opponents[1], myFaces: ['t2'], winnerKd: 0, missing: new Set(['o2_win.png']) });

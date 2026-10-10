@@ -96,6 +96,23 @@
     return typeof missing === 'function' ? !!missing(src) : missing.has(src);
   }
 
+  /* A path ending in ".*" means "any image type": the game tries each of
+   * these in order and uses the first file that exists. Used for the Victory
+   * rows (the win and defeat screens), which show once a fight, so the extra
+   * tries cost nothing. Everything else names one exact file. */
+  const ANY_EXT = ['png', 'jpg', 'jpeg', 'webp', 'gif', 'avif', 'svg', 'PNG', 'JPG', 'JPEG'];
+  function expandSrc(src) {
+    src = String(src || '').trim();
+    if (!src) return [];
+    return /\.\*$/.test(src) ? ANY_EXT.map(e => src.slice(0, -1) + e) : [src];
+  }
+  /* First version of a path not known to be missing. The screen checks files
+   * in this same order and stops at the first that loads, so the two agree. */
+  function pickSrc(src, missing) {
+    for (const c of expandSrc(src)) if (!isMissing(missing, c)) return c;
+    return '';
+  }
+
   /* The lookup itself.
    *   kind  'move' (needs cardId) | 'knockdown' | 'victory'
    *   view  'profile' | 'pov'
@@ -112,7 +129,10 @@
         const row = rows[k];
         if (!row) continue;
         const cells = row[q.view] || [];
-        for (const i of order) if (cells[i] && !isMissing(missing, cells[i])) return { src: cells[i], fighter, move: k, view: q.view, slot: i };
+        for (const i of order) {
+          const src = pickSrc(cells[i], missing);
+          if (src) return { src, cell: cells[i], fighter, move: k, view: q.view, slot: i };
+        }
       }
     }
     return null;
@@ -141,16 +161,19 @@
     const o = r.opponent;
     const cfg = data.config || {};
     const m = r.missing;
+    const pick = (src, from) => { const s = src ? pickSrc(src, m) : ''; return s ? { src: s, from } : null; };
     if (r.won) {
-      if (o && o.winArt && !isMissing(m, o.winArt)) return { src: o.winArt, from: 'win_art' };
+      const own = o && pick(o.winArt, 'win_art');
+      if (own) return own;
       const hit = resolveCutIn(data, r.myFaces || [], { kind: 'victory', view: 'profile', slot: r.winnerKd }, m);
       if (hit) return { src: hit.src, from: 'victory', hit };
-      return cfg.default_win_art ? { src: cfg.default_win_art, from: 'default_win_art' } : null;
+      return pick(cfg.default_win_art, 'default_win_art');
     }
-    if (o && o.lossArt && !isMissing(m, o.lossArt)) return { src: o.lossArt, from: 'loss_art' };
+    const own = o && pick(o.lossArt, 'loss_art');
+    if (own) return own;
     const hit = resolveCutIn(data, r.theirFaces || [], { kind: 'victory', view: 'pov', slot: r.winnerKd }, m);
     if (hit) return { src: hit.src, from: 'victory', hit };
-    return cfg.default_loss_art ? { src: cfg.default_loss_art, from: 'default_loss_art' } : null;
+    return pick(cfg.default_loss_art, 'default_loss_art');
   }
 
   /* Every image a fight could show for these faces, for preloading. */
@@ -229,7 +252,8 @@
     return plan;
   }
   function artPath(data, face, row, view, slot, ext) {
-    return `art/cutins/${face.folder}/${moveFileSlug(data, row)}_${view}_${slot}.${ext || 'png'}`;
+    const e = row.kind === 'victory' ? '*' : (ext || 'png');   // win/defeat screens: any image type
+    return `art/cutins/${face.folder}/${moveFileSlug(data, row)}_${view}_${slot}.${e}`;
   }
 
   function artPlan(data) {
@@ -248,5 +272,5 @@
     return assignFolders(plan);
   }
 
-  return { CUTIN_SLOT_COUNT: SLOTS, styleChain, faceChain, moveKeys, slotOrder, knockdownSlot, resolveCutIn, resultArt, artFiles, candidates, artPlan, artPath, slug };
+  return { CUTIN_SLOT_COUNT: SLOTS, styleChain, faceChain, moveKeys, slotOrder, knockdownSlot, resolveCutIn, resultArt, artFiles, candidates, artPlan, artPath, slug, expandSrc, pickSrc, ANY_EXT };
 });

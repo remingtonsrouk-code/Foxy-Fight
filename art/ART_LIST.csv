@@ -41,12 +41,12 @@ done,face,type,folder,move,covers,view,slot,what_to_draw,file
 ,Cherry Bomb,style,cherry-bomb,Knockdown,,pov,0,Cherry Bomb crumpling to the canvas in front of the viewer. First knockdown.,art/cutins/cherry-bomb/knockdown_pov_0.png
 ,Cherry Bomb,style,cherry-bomb,Knockdown,,pov,1,Cherry Bomb crumpling to the canvas in front of the viewer. Second knockdown.,art/cutins/cherry-bomb/knockdown_pov_1.png
 ,Cherry Bomb,style,cherry-bomb,Knockdown,,pov,2,"Cherry Bomb crumpling to the canvas in front of the viewer. T.K.O., down for good.",art/cutins/cherry-bomb/knockdown_pov_2.png
-,Cherry Bomb,style,cherry-bomb,Victory,,profile,0,"Cherry Bomb triumphant, side or three-quarter view. A clean win, no knockdowns taken.",art/cutins/cherry-bomb/victory_profile_0.png
-,Cherry Bomb,style,cherry-bomb,Victory,,profile,1,"Cherry Bomb triumphant, side or three-quarter view. A win after one knockdown.",art/cutins/cherry-bomb/victory_profile_1.png
-,Cherry Bomb,style,cherry-bomb,Victory,,profile,2,"Cherry Bomb triumphant, side or three-quarter view. A hard-won win after two knockdowns.",art/cutins/cherry-bomb/victory_profile_2.png
-,Cherry Bomb,style,cherry-bomb,Victory,,pov,0,"Cherry Bomb standing over the viewer, victorious (the viewer lost). A clean win, no knockdowns taken.",art/cutins/cherry-bomb/victory_pov_0.png
-,Cherry Bomb,style,cherry-bomb,Victory,,pov,1,"Cherry Bomb standing over the viewer, victorious (the viewer lost). A win after one knockdown.",art/cutins/cherry-bomb/victory_pov_1.png
-,Cherry Bomb,style,cherry-bomb,Victory,,pov,2,"Cherry Bomb standing over the viewer, victorious (the viewer lost). A hard-won win after two knockdowns.",art/cutins/cherry-bomb/victory_pov_2.png
+,Cherry Bomb,style,cherry-bomb,Victory,,profile,0,"Cherry Bomb triumphant, side or three-quarter view. A clean win, no knockdowns taken.",art/cutins/cherry-bomb/victory_profile_0.*
+,Cherry Bomb,style,cherry-bomb,Victory,,profile,1,"Cherry Bomb triumphant, side or three-quarter view. A win after one knockdown.",art/cutins/cherry-bomb/victory_profile_1.*
+,Cherry Bomb,style,cherry-bomb,Victory,,profile,2,"Cherry Bomb triumphant, side or three-quarter view. A hard-won win after two knockdowns.",art/cutins/cherry-bomb/victory_profile_2.*
+,Cherry Bomb,style,cherry-bomb,Victory,,pov,0,"Cherry Bomb standing over the viewer, victorious (the viewer lost). A clean win, no knockdowns taken.",art/cutins/cherry-bomb/victory_pov_0.*
+,Cherry Bomb,style,cherry-bomb,Victory,,pov,1,"Cherry Bomb standing over the viewer, victorious (the viewer lost). A win after one knockdown.",art/cutins/cherry-bomb/victory_pov_1.*
+,Cherry Bomb,style,cherry-bomb,Victory,,pov,2,"Cherry Bomb standing over the viewer, victorious (the viewer lost). A hard-won win after two knockdowns.",art/cutins/cherry-bomb/victory_pov_2.*
 ,Main Event,style,main-event,Opener,Blow a Kiss · Cherry Feint · Strike a Pose,profile,0,"Main Event teasing her opponent before the exchange, side view. Fresh.",art/cutins/main-event/opener_profile_0.png
 ,Main Event,style,main-event,Opener,Blow a Kiss · Cherry Feint · Strike a Pose,profile,1,"Main Event teasing her opponent before the exchange, side view. Worn: sweat sheen, hair coming loose, breathing hard.",art/cutins/main-event/opener_profile_1.png
 ,Main Event,style,main-event,Opener,Blow a Kiss · Cherry Feint · Strike a Pose,profile,2,"Main Event teasing her opponent before the exchange, side view. Battered: swelling, smudged makeup, taped hands, heavy shoulders.",art/cutins/main-event/opener_profile_2.png
@@ -101,12 +101,12 @@ done,face,type,folder,move,covers,view,slot,what_to_draw,file
 ,Main Event,style,main-event,Knockdown,,pov,0,Main Event crumpling to the canvas in front of the viewer. First knockdown.,art/cutins/main-event/knockdown_pov_0.png
 ,Main Event,style,main-event,Knockdown,,pov,1,Main Event crumpling to the canvas in front of the viewer. Second knockdown.,art/cutins/main-event/knockdown_pov_1.png
 ,Main Event,style,main-event,Knockdown,,pov,2,"Main Event crumpling to the canvas in front of the viewer. T.K.O., down for good.",art/cutins/main-event/knockdown_pov_2.png
-,Main Event,style,main-event,Victory,,profile,0,"Main Event triumphant, side or three-quarter view. A clean win, no knockdowns taken.",art/cutins/main-event/victory_profile_0.png
-,Main Event,style,main-event,Victory,,profile,1,"Main Event triumphant, side or three-quarter view. A win after one knockdown.",art/cutins/main-event/victory_profile_1.png
-,Main Event,style,main-event,Victory,,profile,2,"Main Event triumphant, side or three-quarter view. A hard-won win after two knockdowns.",art/cutins/main-event/victory_profile_2.png
-,Main Event,style,main-event,Victory,,pov,0,"Main Event standing over the viewer, victorious (the viewer lost). A clean win, no knockdowns taken.",art/cutins/main-event/victory_pov_0.png
-,Main Event,style,main-event,Victory,,pov,1,"Main Event standing over the viewer, victorious (the viewer lost). A win after one knockdown.",art/cutins/main-event/victory_pov_1.png
-,Main Event,style,main-event,Victory,,pov,2,"Main Event standing over the viewer, victorious (the viewer lost). A hard-won win after two knockdowns.",art/cutins/main-event/victory_pov_2.png
+,Main Event,style,main-event,Victory,,profile,0,"Main Event triumphant, side or three-quarter view. A clean win, no knockdowns taken.",art/cutins/main-event/victory_profile_0.*
+,Main Event,style,main-event,Victory,,profile,1,"Main Event triumphant, side or three-quarter view. A win after one knockdown.",art/cutins/main-event/victory_profile_1.*
+,Main Event,style,main-event,Victory,,profile,2,"Main Event triumphant, side or three-quarter view. A hard-won win after two knockdowns.",art/cutins/main-event/victory_profile_2.*
+,Main Event,style,main-event,Victory,,pov,0,"Main Event standing over the viewer, victorious (the viewer lost). A clean win, no knockdowns taken.",art/cutins/main-event/victory_pov_0.*
+,Main Event,style,main-event,Victory,,pov,1,"Main Event standing over the viewer, victorious (the viewer lost). A win after one knockdown.",art/cutins/main-event/victory_pov_1.*
+,Main Event,style,main-event,Victory,,pov,2,"Main Event standing over the viewer, victorious (the viewer lost). A hard-won win after two knockdowns.",art/cutins/main-event/victory_pov_2.*
 ,Velvet Hammer,style,velvet-hammer,Opener,Touch Gloves · Strike a Pose,profile,0,"Velvet Hammer teasing her opponent before the exchange, side view. Fresh.",art/cutins/velvet-hammer/opener_profile_0.png
 ,Velvet Hammer,style,velvet-hammer,Opener,Touch Gloves · Strike a Pose,profile,1,"Velvet Hammer teasing her opponent before the exchange, side view. Worn: sweat sheen, hair coming loose, breathing hard.",art/cutins/velvet-hammer/opener_profile_1.png
 ,Velvet Hammer,style,velvet-hammer,Opener,Touch Gloves · Strike a Pose,profile,2,"Velvet Hammer teasing her opponent before the exchange, side view. Battered: swelling, smudged makeup, taped hands, heavy shoulders.",art/cutins/velvet-hammer/opener_profile_2.png
@@ -149,12 +149,12 @@ done,face,type,folder,move,covers,view,slot,what_to_draw,file
 ,Velvet Hammer,style,velvet-hammer,Knockdown,,pov,0,Velvet Hammer crumpling to the canvas in front of the viewer. First knockdown.,art/cutins/velvet-hammer/knockdown_pov_0.png
 ,Velvet Hammer,style,velvet-hammer,Knockdown,,pov,1,Velvet Hammer crumpling to the canvas in front of the viewer. Second knockdown.,art/cutins/velvet-hammer/knockdown_pov_1.png
 ,Velvet Hammer,style,velvet-hammer,Knockdown,,pov,2,"Velvet Hammer crumpling to the canvas in front of the viewer. T.K.O., down for good.",art/cutins/velvet-hammer/knockdown_pov_2.png
-,Velvet Hammer,style,velvet-hammer,Victory,,profile,0,"Velvet Hammer triumphant, side or three-quarter view. A clean win, no knockdowns taken.",art/cutins/velvet-hammer/victory_profile_0.png
-,Velvet Hammer,style,velvet-hammer,Victory,,profile,1,"Velvet Hammer triumphant, side or three-quarter view. A win after one knockdown.",art/cutins/velvet-hammer/victory_profile_1.png
-,Velvet Hammer,style,velvet-hammer,Victory,,profile,2,"Velvet Hammer triumphant, side or three-quarter view. A hard-won win after two knockdowns.",art/cutins/velvet-hammer/victory_profile_2.png
-,Velvet Hammer,style,velvet-hammer,Victory,,pov,0,"Velvet Hammer standing over the viewer, victorious (the viewer lost). A clean win, no knockdowns taken.",art/cutins/velvet-hammer/victory_pov_0.png
-,Velvet Hammer,style,velvet-hammer,Victory,,pov,1,"Velvet Hammer standing over the viewer, victorious (the viewer lost). A win after one knockdown.",art/cutins/velvet-hammer/victory_pov_1.png
-,Velvet Hammer,style,velvet-hammer,Victory,,pov,2,"Velvet Hammer standing over the viewer, victorious (the viewer lost). A hard-won win after two knockdowns.",art/cutins/velvet-hammer/victory_pov_2.png
+,Velvet Hammer,style,velvet-hammer,Victory,,profile,0,"Velvet Hammer triumphant, side or three-quarter view. A clean win, no knockdowns taken.",art/cutins/velvet-hammer/victory_profile_0.*
+,Velvet Hammer,style,velvet-hammer,Victory,,profile,1,"Velvet Hammer triumphant, side or three-quarter view. A win after one knockdown.",art/cutins/velvet-hammer/victory_profile_1.*
+,Velvet Hammer,style,velvet-hammer,Victory,,profile,2,"Velvet Hammer triumphant, side or three-quarter view. A hard-won win after two knockdowns.",art/cutins/velvet-hammer/victory_profile_2.*
+,Velvet Hammer,style,velvet-hammer,Victory,,pov,0,"Velvet Hammer standing over the viewer, victorious (the viewer lost). A clean win, no knockdowns taken.",art/cutins/velvet-hammer/victory_pov_0.*
+,Velvet Hammer,style,velvet-hammer,Victory,,pov,1,"Velvet Hammer standing over the viewer, victorious (the viewer lost). A win after one knockdown.",art/cutins/velvet-hammer/victory_pov_1.*
+,Velvet Hammer,style,velvet-hammer,Victory,,pov,2,"Velvet Hammer standing over the viewer, victorious (the viewer lost). A hard-won win after two knockdowns.",art/cutins/velvet-hammer/victory_pov_2.*
 ,Brick House,style,brick-house,Opener,Touch Gloves · Strike a Pose,profile,0,"Brick House teasing her opponent before the exchange, side view. Fresh.",art/cutins/brick-house/opener_profile_0.png
 ,Brick House,style,brick-house,Opener,Touch Gloves · Strike a Pose,profile,1,"Brick House teasing her opponent before the exchange, side view. Worn: sweat sheen, hair coming loose, breathing hard.",art/cutins/brick-house/opener_profile_1.png
 ,Brick House,style,brick-house,Opener,Touch Gloves · Strike a Pose,profile,2,"Brick House teasing her opponent before the exchange, side view. Battered: swelling, smudged makeup, taped hands, heavy shoulders.",art/cutins/brick-house/opener_profile_2.png
@@ -209,12 +209,12 @@ done,face,type,folder,move,covers,view,slot,what_to_draw,file
 ,Brick House,style,brick-house,Knockdown,,pov,0,Brick House crumpling to the canvas in front of the viewer. First knockdown.,art/cutins/brick-house/knockdown_pov_0.png
 ,Brick House,style,brick-house,Knockdown,,pov,1,Brick House crumpling to the canvas in front of the viewer. Second knockdown.,art/cutins/brick-house/knockdown_pov_1.png
 ,Brick House,style,brick-house,Knockdown,,pov,2,"Brick House crumpling to the canvas in front of the viewer. T.K.O., down for good.",art/cutins/brick-house/knockdown_pov_2.png
-,Brick House,style,brick-house,Victory,,profile,0,"Brick House triumphant, side or three-quarter view. A clean win, no knockdowns taken.",art/cutins/brick-house/victory_profile_0.png
-,Brick House,style,brick-house,Victory,,profile,1,"Brick House triumphant, side or three-quarter view. A win after one knockdown.",art/cutins/brick-house/victory_profile_1.png
-,Brick House,style,brick-house,Victory,,profile,2,"Brick House triumphant, side or three-quarter view. A hard-won win after two knockdowns.",art/cutins/brick-house/victory_profile_2.png
-,Brick House,style,brick-house,Victory,,pov,0,"Brick House standing over the viewer, victorious (the viewer lost). A clean win, no knockdowns taken.",art/cutins/brick-house/victory_pov_0.png
-,Brick House,style,brick-house,Victory,,pov,1,"Brick House standing over the viewer, victorious (the viewer lost). A win after one knockdown.",art/cutins/brick-house/victory_pov_1.png
-,Brick House,style,brick-house,Victory,,pov,2,"Brick House standing over the viewer, victorious (the viewer lost). A hard-won win after two knockdowns.",art/cutins/brick-house/victory_pov_2.png
+,Brick House,style,brick-house,Victory,,profile,0,"Brick House triumphant, side or three-quarter view. A clean win, no knockdowns taken.",art/cutins/brick-house/victory_profile_0.*
+,Brick House,style,brick-house,Victory,,profile,1,"Brick House triumphant, side or three-quarter view. A win after one knockdown.",art/cutins/brick-house/victory_profile_1.*
+,Brick House,style,brick-house,Victory,,profile,2,"Brick House triumphant, side or three-quarter view. A hard-won win after two knockdowns.",art/cutins/brick-house/victory_profile_2.*
+,Brick House,style,brick-house,Victory,,pov,0,"Brick House standing over the viewer, victorious (the viewer lost). A clean win, no knockdowns taken.",art/cutins/brick-house/victory_pov_0.*
+,Brick House,style,brick-house,Victory,,pov,1,"Brick House standing over the viewer, victorious (the viewer lost). A win after one knockdown.",art/cutins/brick-house/victory_pov_1.*
+,Brick House,style,brick-house,Victory,,pov,2,"Brick House standing over the viewer, victorious (the viewer lost). A hard-won win after two knockdowns.",art/cutins/brick-house/victory_pov_2.*
 ,Lola Lux,opponent,lola-lux,Opener,Blow a Kiss,pov,0,Lola Lux teasing the viewer before the exchange. Fresh.,art/cutins/lola-lux/opener_pov_0.png
 ,Lola Lux,opponent,lola-lux,Opener,Blow a Kiss,pov,1,"Lola Lux teasing the viewer before the exchange. Worn: sweat sheen, hair coming loose, breathing hard.",art/cutins/lola-lux/opener_pov_1.png
 ,Lola Lux,opponent,lola-lux,Opener,Blow a Kiss,pov,2,"Lola Lux teasing the viewer before the exchange. Battered: swelling, smudged makeup, taped hands, heavy shoulders.",art/cutins/lola-lux/opener_pov_2.png
@@ -233,9 +233,9 @@ done,face,type,folder,move,covers,view,slot,what_to_draw,file
 ,Lola Lux,opponent,lola-lux,Knockdown,,pov,0,Lola Lux crumpling to the canvas in front of the viewer. First knockdown.,art/cutins/lola-lux/knockdown_pov_0.png
 ,Lola Lux,opponent,lola-lux,Knockdown,,pov,1,Lola Lux crumpling to the canvas in front of the viewer. Second knockdown.,art/cutins/lola-lux/knockdown_pov_1.png
 ,Lola Lux,opponent,lola-lux,Knockdown,,pov,2,"Lola Lux crumpling to the canvas in front of the viewer. T.K.O., down for good.",art/cutins/lola-lux/knockdown_pov_2.png
-,Lola Lux,opponent,lola-lux,Victory,,pov,0,"Lola Lux standing over the viewer, victorious (the viewer lost). A clean win, no knockdowns taken.",art/cutins/lola-lux/victory_pov_0.png
-,Lola Lux,opponent,lola-lux,Victory,,pov,1,"Lola Lux standing over the viewer, victorious (the viewer lost). A win after one knockdown.",art/cutins/lola-lux/victory_pov_1.png
-,Lola Lux,opponent,lola-lux,Victory,,pov,2,"Lola Lux standing over the viewer, victorious (the viewer lost). A hard-won win after two knockdowns.",art/cutins/lola-lux/victory_pov_2.png
+,Lola Lux,opponent,lola-lux,Victory,,pov,0,"Lola Lux standing over the viewer, victorious (the viewer lost). A clean win, no knockdowns taken.",art/cutins/lola-lux/victory_pov_0.*
+,Lola Lux,opponent,lola-lux,Victory,,pov,1,"Lola Lux standing over the viewer, victorious (the viewer lost). A win after one knockdown.",art/cutins/lola-lux/victory_pov_1.*
+,Lola Lux,opponent,lola-lux,Victory,,pov,2,"Lola Lux standing over the viewer, victorious (the viewer lost). A hard-won win after two knockdowns.",art/cutins/lola-lux/victory_pov_2.*
 ,"Dolores ""Dee"" Maddox",opponent,dolores-dee-maddox,Opener,Touch Gloves,pov,0,"Dolores ""Dee"" Maddox teasing the viewer before the exchange. Fresh.",art/cutins/dolores-dee-maddox/opener_pov_0.png
 ,"Dolores ""Dee"" Maddox",opponent,dolores-dee-maddox,Opener,Touch Gloves,pov,1,"Dolores ""Dee"" Maddox teasing the viewer before the exchange. Worn: sweat sheen, hair coming loose, breathing hard.",art/cutins/dolores-dee-maddox/opener_pov_1.png
 ,"Dolores ""Dee"" Maddox",opponent,dolores-dee-maddox,Opener,Touch Gloves,pov,2,"Dolores ""Dee"" Maddox teasing the viewer before the exchange. Battered: swelling, smudged makeup, taped hands, heavy shoulders.",art/cutins/dolores-dee-maddox/opener_pov_2.png
@@ -254,9 +254,9 @@ done,face,type,folder,move,covers,view,slot,what_to_draw,file
 ,"Dolores ""Dee"" Maddox",opponent,dolores-dee-maddox,Knockdown,,pov,0,"Dolores ""Dee"" Maddox crumpling to the canvas in front of the viewer. First knockdown.",art/cutins/dolores-dee-maddox/knockdown_pov_0.png
 ,"Dolores ""Dee"" Maddox",opponent,dolores-dee-maddox,Knockdown,,pov,1,"Dolores ""Dee"" Maddox crumpling to the canvas in front of the viewer. Second knockdown.",art/cutins/dolores-dee-maddox/knockdown_pov_1.png
 ,"Dolores ""Dee"" Maddox",opponent,dolores-dee-maddox,Knockdown,,pov,2,"Dolores ""Dee"" Maddox crumpling to the canvas in front of the viewer. T.K.O., down for good.",art/cutins/dolores-dee-maddox/knockdown_pov_2.png
-,"Dolores ""Dee"" Maddox",opponent,dolores-dee-maddox,Victory,,pov,0,"Dolores ""Dee"" Maddox standing over the viewer, victorious (the viewer lost). A clean win, no knockdowns taken.",art/cutins/dolores-dee-maddox/victory_pov_0.png
-,"Dolores ""Dee"" Maddox",opponent,dolores-dee-maddox,Victory,,pov,1,"Dolores ""Dee"" Maddox standing over the viewer, victorious (the viewer lost). A win after one knockdown.",art/cutins/dolores-dee-maddox/victory_pov_1.png
-,"Dolores ""Dee"" Maddox",opponent,dolores-dee-maddox,Victory,,pov,2,"Dolores ""Dee"" Maddox standing over the viewer, victorious (the viewer lost). A hard-won win after two knockdowns.",art/cutins/dolores-dee-maddox/victory_pov_2.png
+,"Dolores ""Dee"" Maddox",opponent,dolores-dee-maddox,Victory,,pov,0,"Dolores ""Dee"" Maddox standing over the viewer, victorious (the viewer lost). A clean win, no knockdowns taken.",art/cutins/dolores-dee-maddox/victory_pov_0.*
+,"Dolores ""Dee"" Maddox",opponent,dolores-dee-maddox,Victory,,pov,1,"Dolores ""Dee"" Maddox standing over the viewer, victorious (the viewer lost). A win after one knockdown.",art/cutins/dolores-dee-maddox/victory_pov_1.*
+,"Dolores ""Dee"" Maddox",opponent,dolores-dee-maddox,Victory,,pov,2,"Dolores ""Dee"" Maddox standing over the viewer, victorious (the viewer lost). A hard-won win after two knockdowns.",art/cutins/dolores-dee-maddox/victory_pov_2.*
 ,"Vicki ""High Score"" Starr",opponent,vicki-high-score-starr,Opener,Blow a Kiss,pov,0,"Vicki ""High Score"" Starr teasing the viewer before the exchange. Fresh.",art/cutins/vicki-high-score-starr/opener_pov_0.png
 ,"Vicki ""High Score"" Starr",opponent,vicki-high-score-starr,Opener,Blow a Kiss,pov,1,"Vicki ""High Score"" Starr teasing the viewer before the exchange. Worn: sweat sheen, hair coming loose, breathing hard.",art/cutins/vicki-high-score-starr/opener_pov_1.png
 ,"Vicki ""High Score"" Starr",opponent,vicki-high-score-starr,Opener,Blow a Kiss,pov,2,"Vicki ""High Score"" Starr teasing the viewer before the exchange. Battered: swelling, smudged makeup, taped hands, heavy shoulders.",art/cutins/vicki-high-score-starr/opener_pov_2.png
@@ -275,9 +275,9 @@ done,face,type,folder,move,covers,view,slot,what_to_draw,file
 ,"Vicki ""High Score"" Starr",opponent,vicki-high-score-starr,Knockdown,,pov,0,"Vicki ""High Score"" Starr crumpling to the canvas in front of the viewer. First knockdown.",art/cutins/vicki-high-score-starr/knockdown_pov_0.png
 ,"Vicki ""High Score"" Starr",opponent,vicki-high-score-starr,Knockdown,,pov,1,"Vicki ""High Score"" Starr crumpling to the canvas in front of the viewer. Second knockdown.",art/cutins/vicki-high-score-starr/knockdown_pov_1.png
 ,"Vicki ""High Score"" Starr",opponent,vicki-high-score-starr,Knockdown,,pov,2,"Vicki ""High Score"" Starr crumpling to the canvas in front of the viewer. T.K.O., down for good.",art/cutins/vicki-high-score-starr/knockdown_pov_2.png
-,"Vicki ""High Score"" Starr",opponent,vicki-high-score-starr,Victory,,pov,0,"Vicki ""High Score"" Starr standing over the viewer, victorious (the viewer lost). A clean win, no knockdowns taken.",art/cutins/vicki-high-score-starr/victory_pov_0.png
-,"Vicki ""High Score"" Starr",opponent,vicki-high-score-starr,Victory,,pov,1,"Vicki ""High Score"" Starr standing over the viewer, victorious (the viewer lost). A win after one knockdown.",art/cutins/vicki-high-score-starr/victory_pov_1.png
-,"Vicki ""High Score"" Starr",opponent,vicki-high-score-starr,Victory,,pov,2,"Vicki ""High Score"" Starr standing over the viewer, victorious (the viewer lost). A hard-won win after two knockdowns.",art/cutins/vicki-high-score-starr/victory_pov_2.png
+,"Vicki ""High Score"" Starr",opponent,vicki-high-score-starr,Victory,,pov,0,"Vicki ""High Score"" Starr standing over the viewer, victorious (the viewer lost). A clean win, no knockdowns taken.",art/cutins/vicki-high-score-starr/victory_pov_0.*
+,"Vicki ""High Score"" Starr",opponent,vicki-high-score-starr,Victory,,pov,1,"Vicki ""High Score"" Starr standing over the viewer, victorious (the viewer lost). A win after one knockdown.",art/cutins/vicki-high-score-starr/victory_pov_1.*
+,"Vicki ""High Score"" Starr",opponent,vicki-high-score-starr,Victory,,pov,2,"Vicki ""High Score"" Starr standing over the viewer, victorious (the viewer lost). A hard-won win after two knockdowns.",art/cutins/vicki-high-score-starr/victory_pov_2.*
 ,Ingrid Kessler,opponent,ingrid-kessler,Opener,Touch Gloves,pov,0,Ingrid Kessler teasing the viewer before the exchange. Fresh.,art/cutins/ingrid-kessler/opener_pov_0.png
 ,Ingrid Kessler,opponent,ingrid-kessler,Opener,Touch Gloves,pov,1,"Ingrid Kessler teasing the viewer before the exchange. Worn: sweat sheen, hair coming loose, breathing hard.",art/cutins/ingrid-kessler/opener_pov_1.png
 ,Ingrid Kessler,opponent,ingrid-kessler,Opener,Touch Gloves,pov,2,"Ingrid Kessler teasing the viewer before the exchange. Battered: swelling, smudged makeup, taped hands, heavy shoulders.",art/cutins/ingrid-kessler/opener_pov_2.png
@@ -296,9 +296,9 @@ done,face,type,folder,move,covers,view,slot,what_to_draw,file
 ,Ingrid Kessler,opponent,ingrid-kessler,Knockdown,,pov,0,Ingrid Kessler crumpling to the canvas in front of the viewer. First knockdown.,art/cutins/ingrid-kessler/knockdown_pov_0.png
 ,Ingrid Kessler,opponent,ingrid-kessler,Knockdown,,pov,1,Ingrid Kessler crumpling to the canvas in front of the viewer. Second knockdown.,art/cutins/ingrid-kessler/knockdown_pov_1.png
 ,Ingrid Kessler,opponent,ingrid-kessler,Knockdown,,pov,2,"Ingrid Kessler crumpling to the canvas in front of the viewer. T.K.O., down for good.",art/cutins/ingrid-kessler/knockdown_pov_2.png
-,Ingrid Kessler,opponent,ingrid-kessler,Victory,,pov,0,"Ingrid Kessler standing over the viewer, victorious (the viewer lost). A clean win, no knockdowns taken.",art/cutins/ingrid-kessler/victory_pov_0.png
-,Ingrid Kessler,opponent,ingrid-kessler,Victory,,pov,1,"Ingrid Kessler standing over the viewer, victorious (the viewer lost). A win after one knockdown.",art/cutins/ingrid-kessler/victory_pov_1.png
-,Ingrid Kessler,opponent,ingrid-kessler,Victory,,pov,2,"Ingrid Kessler standing over the viewer, victorious (the viewer lost). A hard-won win after two knockdowns.",art/cutins/ingrid-kessler/victory_pov_2.png
+,Ingrid Kessler,opponent,ingrid-kessler,Victory,,pov,0,"Ingrid Kessler standing over the viewer, victorious (the viewer lost). A clean win, no knockdowns taken.",art/cutins/ingrid-kessler/victory_pov_0.*
+,Ingrid Kessler,opponent,ingrid-kessler,Victory,,pov,1,"Ingrid Kessler standing over the viewer, victorious (the viewer lost). A win after one knockdown.",art/cutins/ingrid-kessler/victory_pov_1.*
+,Ingrid Kessler,opponent,ingrid-kessler,Victory,,pov,2,"Ingrid Kessler standing over the viewer, victorious (the viewer lost). A hard-won win after two knockdowns.",art/cutins/ingrid-kessler/victory_pov_2.*
 ,Scarlett Delacroix,opponent,scarlett-delacroix,Opener,Blow a Kiss,pov,0,Scarlett Delacroix teasing the viewer before the exchange. Fresh.,art/cutins/scarlett-delacroix/opener_pov_0.png
 ,Scarlett Delacroix,opponent,scarlett-delacroix,Opener,Blow a Kiss,pov,1,"Scarlett Delacroix teasing the viewer before the exchange. Worn: sweat sheen, hair coming loose, breathing hard.",art/cutins/scarlett-delacroix/opener_pov_1.png
 ,Scarlett Delacroix,opponent,scarlett-delacroix,Opener,Blow a Kiss,pov,2,"Scarlett Delacroix teasing the viewer before the exchange. Battered: swelling, smudged makeup, taped hands, heavy shoulders.",art/cutins/scarlett-delacroix/opener_pov_2.png
@@ -317,9 +317,9 @@ done,face,type,folder,move,covers,view,slot,what_to_draw,file
 ,Scarlett Delacroix,opponent,scarlett-delacroix,Knockdown,,pov,0,Scarlett Delacroix crumpling to the canvas in front of the viewer. First knockdown.,art/cutins/scarlett-delacroix/knockdown_pov_0.png
 ,Scarlett Delacroix,opponent,scarlett-delacroix,Knockdown,,pov,1,Scarlett Delacroix crumpling to the canvas in front of the viewer. Second knockdown.,art/cutins/scarlett-delacroix/knockdown_pov_1.png
 ,Scarlett Delacroix,opponent,scarlett-delacroix,Knockdown,,pov,2,"Scarlett Delacroix crumpling to the canvas in front of the viewer. T.K.O., down for good.",art/cutins/scarlett-delacroix/knockdown_pov_2.png
-,Scarlett Delacroix,opponent,scarlett-delacroix,Victory,,pov,0,"Scarlett Delacroix standing over the viewer, victorious (the viewer lost). A clean win, no knockdowns taken.",art/cutins/scarlett-delacroix/victory_pov_0.png
-,Scarlett Delacroix,opponent,scarlett-delacroix,Victory,,pov,1,"Scarlett Delacroix standing over the viewer, victorious (the viewer lost). A win after one knockdown.",art/cutins/scarlett-delacroix/victory_pov_1.png
-,Scarlett Delacroix,opponent,scarlett-delacroix,Victory,,pov,2,"Scarlett Delacroix standing over the viewer, victorious (the viewer lost). A hard-won win after two knockdowns.",art/cutins/scarlett-delacroix/victory_pov_2.png
+,Scarlett Delacroix,opponent,scarlett-delacroix,Victory,,pov,0,"Scarlett Delacroix standing over the viewer, victorious (the viewer lost). A clean win, no knockdowns taken.",art/cutins/scarlett-delacroix/victory_pov_0.*
+,Scarlett Delacroix,opponent,scarlett-delacroix,Victory,,pov,1,"Scarlett Delacroix standing over the viewer, victorious (the viewer lost). A win after one knockdown.",art/cutins/scarlett-delacroix/victory_pov_1.*
+,Scarlett Delacroix,opponent,scarlett-delacroix,Victory,,pov,2,"Scarlett Delacroix standing over the viewer, victorious (the viewer lost). A hard-won win after two knockdowns.",art/cutins/scarlett-delacroix/victory_pov_2.*
 ,Madame Ruby,opponent,madame-ruby,Opener,Touch Gloves,pov,0,Madame Ruby teasing the viewer before the exchange. Fresh.,art/cutins/madame-ruby/opener_pov_0.png
 ,Madame Ruby,opponent,madame-ruby,Opener,Touch Gloves,pov,1,"Madame Ruby teasing the viewer before the exchange. Worn: sweat sheen, hair coming loose, breathing hard.",art/cutins/madame-ruby/opener_pov_1.png
 ,Madame Ruby,opponent,madame-ruby,Opener,Touch Gloves,pov,2,"Madame Ruby teasing the viewer before the exchange. Battered: swelling, smudged makeup, taped hands, heavy shoulders.",art/cutins/madame-ruby/opener_pov_2.png
@@ -341,6 +341,6 @@ done,face,type,folder,move,covers,view,slot,what_to_draw,file
 ,Madame Ruby,opponent,madame-ruby,Knockdown,,pov,0,Madame Ruby crumpling to the canvas in front of the viewer. First knockdown.,art/cutins/madame-ruby/knockdown_pov_0.png
 ,Madame Ruby,opponent,madame-ruby,Knockdown,,pov,1,Madame Ruby crumpling to the canvas in front of the viewer. Second knockdown.,art/cutins/madame-ruby/knockdown_pov_1.png
 ,Madame Ruby,opponent,madame-ruby,Knockdown,,pov,2,"Madame Ruby crumpling to the canvas in front of the viewer. T.K.O., down for good.",art/cutins/madame-ruby/knockdown_pov_2.png
-,Madame Ruby,opponent,madame-ruby,Victory,,pov,0,"Madame Ruby standing over the viewer, victorious (the viewer lost). A clean win, no knockdowns taken.",art/cutins/madame-ruby/victory_pov_0.png
-,Madame Ruby,opponent,madame-ruby,Victory,,pov,1,"Madame Ruby standing over the viewer, victorious (the viewer lost). A win after one knockdown.",art/cutins/madame-ruby/victory_pov_1.png
-,Madame Ruby,opponent,madame-ruby,Victory,,pov,2,"Madame Ruby standing over the viewer, victorious (the viewer lost). A hard-won win after two knockdowns.",art/cutins/madame-ruby/victory_pov_2.png
+,Madame Ruby,opponent,madame-ruby,Victory,,pov,0,"Madame Ruby standing over the viewer, victorious (the viewer lost). A clean win, no knockdowns taken.",art/cutins/madame-ruby/victory_pov_0.*
+,Madame Ruby,opponent,madame-ruby,Victory,,pov,1,"Madame Ruby standing over the viewer, victorious (the viewer lost). A win after one knockdown.",art/cutins/madame-ruby/victory_pov_1.*
+,Madame Ruby,opponent,madame-ruby,Victory,,pov,2,"Madame Ruby standing over the viewer, victorious (the viewer lost). A hard-won win after two knockdowns.",art/cutins/madame-ruby/victory_pov_2.*

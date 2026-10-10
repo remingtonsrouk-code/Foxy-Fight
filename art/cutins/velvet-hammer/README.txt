@@ -7,6 +7,8 @@ pov     = it coming straight at the viewer (what her opponent sees)
 _0 _1 _2 on a move = knockdowns she has taken: fresh / worn / battered.
 Knockdown _0 _1 _2  = first knockdown / second / T.K.O.
 Victory   _0 _1 _2  = she won after taking 0 / 1 / 2 knockdowns.
+Everything is .png except Victory: victory_*.* can be any image type
+(.png .jpg .webp .gif .avif .svg; an animated .gif or .webp plays).
 Missing pictures are fine: the game uses the nearest one it has.
 
 OPENER  ·  covers Touch Gloves, Strike a Pose
@@ -66,9 +68,9 @@ KNOCKDOWN
   [ ] knockdown_pov_2.png                Velvet Hammer crumpling to the canvas in front of the viewer. T.K.O., down for good.
 
 VICTORY
-  [ ] victory_profile_0.png              Velvet Hammer triumphant, side or three-quarter view. A clean win, no knockdowns taken.
-  [ ] victory_profile_1.png              Velvet Hammer triumphant, side or three-quarter view. A win after one knockdown.
-  [ ] victory_profile_2.png              Velvet Hammer triumphant, side or three-quarter view. A hard-won win after two knockdowns.
-  [ ] victory_pov_0.png                  Velvet Hammer standing over the viewer, victorious (the viewer lost). A clean win, no knockdowns taken.
-  [ ] victory_pov_1.png                  Velvet Hammer standing over the viewer, victorious (the viewer lost). A win after one knockdown.
-  [ ] victory_pov_2.png                  Velvet Hammer standing over the viewer, victorious (the viewer lost). A hard-won win after two knockdowns.
+  [ ] victory_profile_0.*                Velvet Hammer triumphant, side or three-quarter view. A clean win, no knockdowns taken.
+  [ ] victory_profile_1.*                Velvet Hammer triumphant, side or three-quarter view. A win after one knockdown.
+  [ ] victory_profile_2.*                Velvet Hammer triumphant, side or three-quarter view. A hard-won win after two knockdowns.
+  [ ] victory_pov_0.*                    Velvet Hammer standing over the viewer, victorious (the viewer lost). A clean win, no knockdowns taken.
+  [ ] victory_pov_1.*                    Velvet Hammer standing over the viewer, victorious (the viewer lost). A win after one knockdown.
+  [ ] victory_pov_2.*                    Velvet Hammer standing over the viewer, victorious (the viewer lost). A hard-won win after two knockdowns.

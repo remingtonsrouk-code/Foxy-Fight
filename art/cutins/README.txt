@@ -11,7 +11,11 @@ from), and draws a generated cut-in if there is none.
 Format
   .png, 16:9, 1280 x 720. Lowercase names, exactly as listed (GitHub Pages
   is case-sensitive). Smaller files load faster: aim for under 500 KB each.
-  To switch every listed path to another format: npm run art-list -- --ext webp
+  Exception: Victory pictures (the win and defeat screens) can be any image
+  type. Keep the name and pick the ending: victory_pov_0.gif, victory_profile_1.jpg.
+  .png .jpg .jpeg .webp .gif .avif .svg all work; an animated .gif or .webp plays.
+  (iPhone .heic photos do not show in most browsers; export as .jpg.)
+  To switch the other paths to another format: npm run art-list -- --ext webp
 
 Who is who
   Your fighter is always shown in profile; the opponent always in POV, coming

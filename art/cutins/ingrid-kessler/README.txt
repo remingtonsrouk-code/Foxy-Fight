@@ -6,6 +6,8 @@ pov only = it coming straight at the viewer. You never see ladder opponents in p
 _0 _1 _2 on a move = knockdowns she has taken: fresh / worn / battered.
 Knockdown _0 _1 _2  = first knockdown / second / T.K.O.
 Victory   _0 _1 _2  = she won after taking 0 / 1 / 2 knockdowns.
+Everything is .png except Victory: victory_*.* can be any image type
+(.png .jpg .webp .gif .avif .svg; an animated .gif or .webp plays).
 Missing pictures are fine: the game uses the nearest one it has.
 
 OPENER  ·  covers Touch Gloves
@@ -39,6 +41,6 @@ KNOCKDOWN
   [ ] knockdown_pov_2.png                Ingrid Kessler crumpling to the canvas in front of the viewer. T.K.O., down for good.
 
 VICTORY
-  [ ] victory_pov_0.png                  Ingrid Kessler standing over the viewer, victorious (the viewer lost). A clean win, no knockdowns taken.
-  [ ] victory_pov_1.png                  Ingrid Kessler standing over the viewer, victorious (the viewer lost). A win after one knockdown.
-  [ ] victory_pov_2.png                  Ingrid Kessler standing over the viewer, victorious (the viewer lost). A hard-won win after two knockdowns.
+  [ ] victory_pov_0.*                    Ingrid Kessler standing over the viewer, victorious (the viewer lost). A clean win, no knockdowns taken.
+  [ ] victory_pov_1.*                    Ingrid Kessler standing over the viewer, victorious (the viewer lost). A win after one knockdown.
+  [ ] victory_pov_2.*                    Ingrid Kessler standing over the viewer, victorious (the viewer lost). A hard-won win after two knockdowns.
